@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProgressUI();
 });
 
-// ＝＝＝＝ ★新規：進捗率の計算とプログレスバー更新 ＝＝＝＝
+// ＝＝＝＝ 進捗率の計算とプログレスバー更新 ＝＝＝＝
 function updateProgressUI() {
     const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
     let totalTopics = 0;
@@ -82,13 +82,35 @@ function renderTopicMenu(stageData) {
     container.innerHTML = html;
 }
 
-// ＝＝＝＝ 第3層：解説・問題タブを描画 ＝＝＝＝
+// ＝＝＝＝ 第3層：解説・問題タブ または iframe を描画 ＝＝＝＝
 function startTopic(topicId) {
     const stageData = quizData[`stage${currentStageNum}`];
     const topic = stageData.topics.find(t => t.id === topicId);
     if (!topic) return;
 
     const container = document.getElementById('dynamic-content-area');
+
+    // ★クリアボタン生成ロジック（共通）
+    const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
+    const isCleared = clearedTopics.includes(topic.id);
+    const clearBtnHTML = isCleared
+        ? `<span style="color: #28a745; font-weight: bold; margin-left: auto; font-size: 1.1rem;">✔ クリア済み</span>`
+        : `<button onclick="markAsCleared('${topic.id}')" style="margin-left: auto; background: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">このトピックをクリア</button>`;
+
+    // ★新規：standaloneHTML（独立したHTML）が指定されている場合は iframe で展開する
+    if (topic.standaloneHTML) {
+        container.innerHTML = `
+            <div class="nav-header" style="display: flex; align-items: center;">
+                <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
+                <h2 style="color: #004494; margin-left: 15px;">${topic.title}</h2>
+                ${clearBtnHTML}
+            </div>
+            <iframe src="${topic.standaloneHTML}" style="width: 100%; height: 85vh; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"></iframe>
+        `;
+        return; // ここで処理を終了し、以降の fetch 処理は行わない
+    }
+
+    // ★既存：introHTML / quizHTML を fetch する処理
     container.innerHTML = '<p style="text-align:center; font-weight:bold;">データを読み込み中...</p>';
 
     Promise.all([
@@ -96,14 +118,6 @@ function startTopic(topicId) {
         topic.quizHTML ? fetch(topic.quizHTML).then(res => res.ok ? res.text() : Promise.resolve("")) : Promise.resolve("")
     ])
     .then(([introData, quizDataHtml]) => {
-        
-        // ヘッダーにクリアボタン（またはクリア済み表記）を追加
-        const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
-        const isCleared = clearedTopics.includes(topic.id);
-        const clearBtnHTML = isCleared
-            ? `<span style="color: #28a745; font-weight: bold; margin-left: auto; font-size: 1.1rem;">✔ クリア済み</span>`
-            : `<button onclick="markAsCleared('${topic.id}')" style="margin-left: auto; background: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">このトピックをクリア</button>`;
-
         container.innerHTML = `
             <div class="nav-header" style="display: flex; align-items: center;">
                 <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
@@ -166,7 +180,7 @@ function switchPage(targetId) {
     }
 }
 
-// ＝＝＝＝ ★新規：トピックをクリア状態にする処理 ＝＝＝＝
+// ＝＝＝＝ トピックをクリア状態にする処理 ＝＝＝＝
 function markAsCleared(topicId) {
     let clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
     if (!clearedTopics.includes(topicId)) {
@@ -175,17 +189,15 @@ function markAsCleared(topicId) {
     }
     
     updateProgressUI();
-    // 画面を再描画して「✔ クリア済み」テキストに切り替える
     startTopic(topicId);
 }
 
-// ＝＝＝＝ ★新規：全進捗リセット（デモ用） ＝＝＝＝
+// ＝＝＝＝ 全進捗リセット（デモ用） ＝＝＝＝
 function resetProgress() {
     if(confirm("すべての学習進捗をリセットしますか？ (デモ・動作確認用)")) {
         localStorage.removeItem('fe_algo_cleared_topics');
         updateProgressUI();
         
-        // もし現在メニュー画面を開いていたら再描画する
         if (document.getElementById('learning-layer').style.display === 'block' && currentStageNum !== null) {
             renderTopicMenu(quizData[`stage${currentStageNum}`]);
         }
@@ -195,7 +207,6 @@ function resetProgress() {
 
 // ＝＝＝＝ 互換性維持：古いチュートリアル完了ボタン用 ＝＝＝＝
 function completeTutorial() {
-    // 既存の tut_07.html 内のボタンが押されたときのエラーを防ぎつつ、クリア扱いにする
     markAsCleared('tut_07');
     alert('🎉 チュートリアルクリア！進捗が保存されました！');
     backToRoadmap();
