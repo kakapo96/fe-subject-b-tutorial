@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アルゴリズム理解度チェック：線形探索法</title>
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-main: #333333;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+        }
+        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--surface-color); padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .page { display: none; }
+        .page.active { display: block; }
+        h1, h2 { color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .question-box { background-color: #f0fdfa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .options-box { margin-bottom: 20px; }
+        .options-box label { display: block; background: #f1f5f9; padding: 10px; margin-bottom: 8px; border-radius: 4px; cursor: pointer; border: 1px solid #cbd5e1; }
+        .options-box label:hover { background: #e2e8f0; }
+        
+        /* コードブロックのスタイル厳守 */
+        pre.pseudo-code { background-color: var(--code-bg); color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 1em; line-height: 1.5; }
+        .explanation-box { background-color: #fffbeb; border-left: 5px solid #d97706; padding: 20px; margin-bottom: 20px; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button.btn-back { background-color: #64748b; }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="p1" class="page active">
+        <h2>第1問（基礎トレース）</h2>
+        <div class="question-box">
+            <p>要素が1から始まる整数型の配列 <code>data</code> に <code>[22, 14, 50, 39, 61]</code> が格納されています。<br>以下のプログラムを実行したとき、最終的な変数 <code>ans</code> の値はどうなるか。</p>
+<pre class="pseudo-code"><code>〇整数型の配列: data ← {22, 14, 50, 39, 61}
+〇整数型: target ← 39
+〇整数型: ans, i
+
+ans ← -1
+for (i を 1 から dataの要素数 まで 1 ずつ増やす)
+    if (data[i] == target)
+        ans ← i
+        break
+    endif
+endfor</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q1"> ア: 1</label>
+            <label><input type="radio" name="q1"> イ: 2</label>
+            <label><input type="radio" name="q1"> ウ: 3</label>
+            <label><input type="radio" name="q1"> エ: 4</label>
+            <label><input type="radio" name="q1"> オ: 5</label>
+            <label><input type="radio" name="q1"> カ: 39</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p2')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p2" class="page">
+        <h2>第1問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： エ (4)</h3>
+            <p>線形探索法の基本的なトレース問題です。配列の先頭（1番目）から順番に <code>target</code> (39) と比較を行います。</p>
+            <ul>
+                <li>初期状態: ans = -1</li>
+                <li>1周目 (i=1): data[1]は22。39と一致しないため次へ。</li>
+                <li>2周目 (i=2): data[2]は14。39と一致しないため次へ。</li>
+                <li>3周目 (i=3): data[3]は50。39と一致しないため次へ。</li>
+                <li>4周目 (i=4): data[4]は39。<strong>target(39)と一致した！</strong></li>
+            </ul>
+            <p>一致したため <code>ans ← i</code> (ans に 4 を代入) が実行され、<code>break</code> によりループを終了します。したがって、最終的な <code>ans</code> の値は 4 となります。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p1')">前のページに戻る</button>
+            <button onclick="switchPage('p3')">次の問題へ</button>
+        </div>
+    </div>
+
+    <div id="p3" class="page">
+        <h2>第2問（発展トレース）</h2>
+        <div class="question-box">
+            <p>要素が1から始まる整数型の配列 <code>data</code> に <code>[8, 12, 19, 21]</code> が格納されています。<br>以下のプログラムを実行したとき、最終的な変数 <code>ans</code> の値はどうなるか。</p>
+<pre class="pseudo-code"><code>〇整数型の配列: data ← {8, 12, 19, 21}
+〇整数型: target ← 15
+〇整数型: ans, i
+
+ans ← -1
+for (i を 1 から dataの要素数 まで 1 ずつ増やす)
+    if (data[i] == target)
+        ans ← i
+        break
+    endif
+endfor</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q2"> ア: -1</label>
+            <label><input type="radio" name="q2"> イ: 0</label>
+            <label><input type="radio" name="q2"> ウ: 1</label>
+            <label><input type="radio" name="q2"> エ: 4</label>
+            <label><input type="radio" name="q2"> オ: 5</label>
+            <label><input type="radio" name="q2"> カ: 15</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p4')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <h2>第2問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： ア (-1)</h3>
+            <p>配列の中に<strong>探している値が存在しない場合</strong>のトレース問題です。探している値 <code>target</code> は 15 です。</p>
+            <ul>
+                <li>初期状態: ans = -1, 配列の要素数は 4</li>
+                <li>1周目 (i=1): data[1]は8。15と一致しない。</li>
+                <li>2周目 (i=2): data[2]は12。15と一致しない。</li>
+                <li>3周目 (i=3): data[3]は19。15と一致しない。</li>
+                <li>4周目 (i=4): data[4]は21。15と一致しない。</li>
+            </ul>
+            <p>ループが 1 から 4 まで全て回り切りましたが、一度も <code>if (data[i] == target)</code> の条件が「真」になりませんでした。<br>そのため、ループ内の <code>ans ← i</code> は一度も実行されず、<code>ans</code> の値は初期値の <strong>-1</strong> のままとなります。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p3')">前のページに戻る</button>
+            <button onclick="switchPage('p5')">次の問題へ</button>
+        </div>
+    </div>
+
+    <div id="p5" class="page">
+        <h2>第3問（本番レベル・穴埋め）</h2>
+        <div class="question-box">
+            <p>以下のプログラムは、線形探索を高速化するための<strong>「番兵法」</strong>を用いた探索アルゴリズムです。<br>要素数 <code>N</code> の配列 <code>data</code>（インデックスは1〜N）の<strong>末尾に番兵を追加</strong>して探索を行います。<br>空欄 [  a  ] および [  b  ] に入る式の組み合わせとして正しいものはどれか。</p>
+<pre class="pseudo-code"><code>〇整数型の配列: data // 1番目からN番目までデータが入っている
+〇整数型: N, target
+〇整数型: i, ans
+
+// 番兵を配列の最後にセットする
+data[ [  a  ] ] ← target
+
+i ← 1
+// 配列の最後まで来たかのチェックが不要になる
+while (data[i] ≠ target)
+    i ← i + 1
+endwhile
+
+// 見つかった場所が番兵だったかどうかを判定
+if (i == [  b  ])
+    ans ← -1    // 見つからなかった
+else
+    ans ← i     // 見つかった
+endif</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q3"> ア: [a] N - 1 , [b] N - 1</label>
+            <label><input type="radio" name="q3"> イ: [a] N , [b] N</label>
+            <label><input type="radio" name="q3"> ウ: [a] N , [b] N + 1</label>
+            <label><input type="radio" name="q3"> エ: [a] N + 1 , [b] N</label>
+            <label><input type="radio" name="q3"> オ: [a] N + 1 , [b] N + 1</label>
+            <label><input type="radio" name="q3"> カ: [a] target , [b] N + 1</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p6')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p6" class="page">
+        <h2>第3問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： オ ([a] N + 1 , [b] N + 1)</h3>
+            <p><strong>「番兵法」</strong>は、配列の最後に探している値（番兵）を強制的に追加することで、ループ時の「配列の末尾に到達したか？」という終了判定を省略し、処理を高速化するアルゴリズムです。</p>
+            <ul>
+                <li><strong>空欄 [ a ] について：</strong><br>配列 <code>data</code> には現在 1番目 から N番目 までデータが入っています。番兵を追加する場所は「現在の最後尾の1つ後ろ」なので、<code>N + 1</code> 番目になります。（例: データが5個なら6番目に番兵を置く）</li>
+                <li><strong>空欄 [ b ] について：</strong><br><code>while</code> ループを抜けたとき、変数 <code>i</code> には「値が見つかったインデックス」が入っています。<br>もし <code>i</code> が <code>N + 1</code> であった場合、それは元々あったデータではなく<strong>「自分が追加した番兵を見つけてループが止まった（＝元のデータには存在しなかった）」</strong>ことを意味します。<br>したがって、<code>i == N + 1</code> のときに「見つからなかった (ans ← -1)」という処理を行う必要があります。</li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p5')">前のページに戻る</button>
+            <button onclick="alert('お疲れ様でした！全問終了です。')">終了</button>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
