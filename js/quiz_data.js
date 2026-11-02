@@ -81,7 +81,7 @@ const quizData = {
                 introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_intro.html", 
                 quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_quiz.html" 
             },
-           
+            
         ]
     },
 
@@ -151,5 +151,19 @@ const quizData = {
                 quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_quiz.html" 
             }
         ]
-    }
+    },
+
+    stage4: {
+        title: "応用 ソート",
+        topics: [
+            {
+                id: "kou_sort",
+                title: "09 オブジェクト指向",
+                introHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html", 
+                
+            },
+            
+        ]
+    },
 };
+
