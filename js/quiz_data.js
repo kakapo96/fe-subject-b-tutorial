@@ -81,12 +81,7 @@ const quizData = {
                 introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_intro.html", 
                 quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_quiz.html" 
             },
-            {
-                id: "minimax",
-                title: "15 ミニマックス法",
-                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ミニマックス法/minimax_intro.html", 
-                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ミニマックス法/minimax_quiz.html" 
-            }
+           
         ]
     },
 
