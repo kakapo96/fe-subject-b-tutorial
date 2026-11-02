@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アルゴリズム理解度チェック - 2分探索</title>
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-main: #333333;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+        }
+        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--surface-color); padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .page { display: none; }
+        .page.active { display: block; }
+        h1, h2 { color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .question-box { background-color: #f0fdfa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .options-box { margin-bottom: 20px; }
+        .options-box label { display: block; background: #f1f5f9; padding: 10px; margin-bottom: 8px; border-radius: 4px; cursor: pointer; border: 1px solid #cbd5e1; }
+        .options-box label:hover { background: #e2e8f0; }
+        
+        /* コードブロックのスタイル厳守 */
+        pre.pseudo-code { background-color: var(--code-bg); color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 1em; line-height: 1.5; }
+        .explanation-box { background-color: #fffbeb; border-left: 5px solid #d97706; padding: 20px; margin-bottom: 20px; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button.btn-back { background-color: #64748b; }
+        button:hover { opacity: 0.9; }
+
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; background: white;}
+        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; }
+        th { background-color: #e2e8f0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="p1" class="page active">
+        <h2>第1問（基礎トレース）</h2>
+        <div class="question-box">
+            <p>以下のプログラムは、配列 <code>data</code> から変数 <code>target</code> と一致する値を探す2分探索のアルゴリズムです。<br>
+            配列 <code>data</code> が <code>{10, 30, 50, 70, 90}</code> （要素番号は1から5）、<code>target</code> が <code>70</code> であるとき、<strong>1回目のループ（while文内の処理）が終了した直後</strong>の、変数 <code>low</code> と <code>high</code> の値の組み合わせとして正しいものはどれですか。</p>
+<pre class="pseudo-code"><code>〇整数型の配列: data
+〇整数型: target
+〇整数型: low, high, middle, ans
+
+low ← 1
+high ← dataの要素数
+ans ← -1
+
+while (low <= high)
+    middle ← (low + high) ÷ 2 の商
+    if (data[middle] == target)
+        ans ← middle
+        break
+    elseif (data[middle] < target)
+        low ← middle + 1
+    else
+        high ← middle - 1
+    endif
+endwhile</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q1"> ア: low = 1, high = 5</label>
+            <label><input type="radio" name="q1"> イ: low = 3, high = 5</label>
+            <label><input type="radio" name="q1"> ウ: low = 4, high = 5</label>
+            <label><input type="radio" name="q1"> エ: low = 1, high = 2</label>
+            <label><input type="radio" name="q1"> オ: low = 1, high = 3</label>
+            <label><input type="radio" name="q1"> カ: low = 4, high = 4</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p2')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p2" class="page">
+        <h2>第1問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： ウ (low = 4, high = 5)</h3>
+            <p>変数の変化を順番にトレースします。</p>
+            <ul>
+                <li><strong>初期化処理:</strong><br>
+                <code>low = 1</code><br>
+                <code>high = 5</code> (配列dataの要素数は5)<br>
+                <code>ans = -1</code></li>
+                <li><strong>1回目のループ:</strong><br>
+                <code>low <= high</code> (1 <= 5) は真なのでループに入ります。<br>
+                <code>middle = (1 + 5) ÷ 2 の商 = 3</code><br>
+                配列の3番目を確認します。 <code>data[3]</code> は <code>50</code> です。<br>
+                <code>data[3] (50) == target (70)</code> は偽。<br>
+                <code>data[3] (50) < target (70)</code> は真です。<br>
+                したがって、<code>elseif</code> のブロックが実行され、<code>low = middle + 1</code> となります。<br>
+                <code>low = 3 + 1 = 4</code> に更新されます。<br>
+                <code>high</code> は更新されないため <code>5</code> のままです。</li>
+            </ul>
+            <p>よって、1回目のループ終了直後の値は <strong>low = 4, high = 5</strong> となり、探索範囲が右半分に絞り込まれたことがわかります。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p1')">前のページに戻る</button>
+            <button onclick="switchPage('p3')">次の問題へ</button>
+        </div>
+    </div>
+
+    <div id="p3" class="page">
+        <h2>第2問（発展トレース）</h2>
+        <div class="question-box">
+            <p>第1問と同じ2分探索のプログラムを使用します。<br>
+            配列 <code>data</code> が <code>{15, 25, 35, 45, 55}</code> （要素数5）、探したい値 <code>target</code> が <strong><code>40</code></strong> に設定されているとします。<br>
+            このプログラムを実行し終えたとき、<code>while</code> 文の中の処理（ループ）は<strong>合計何回</strong>実行されますか。（※配列内に存在しない値を探すケースです）</p>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q2"> ア: 1回</label>
+            <label><input type="radio" name="q2"> イ: 2回</label>
+            <label><input type="radio" name="q2"> ウ: 3回</label>
+            <label><input type="radio" name="q2"> エ: 4回</label>
+            <label><input type="radio" name="q2"> オ: 5回</label>
+            <label><input type="radio" name="q2"> カ: 無限ループになる</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p4')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <h2>第2問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： イ (2回)</h3>
+            <p>探している値「40」は配列内に存在しません。この場合の指（lowとhigh）の動きをトレースします。</p>
+            <table>
+                <tr>
+                    <th>ループ回数</th>
+                    <th>判定前 (low, high)</th>
+                    <th>middle</th>
+                    <th>data[middle]との比較</th>
+                    <th>判定後 (low, high)</th>
+                </tr>
+                <tr>
+                    <td>1回目</td>
+                    <td>low=1, high=5</td>
+                    <td>(1+5)÷2 = 3</td>
+                    <td>data[3]は35。<br>35 < 40 なので右半分へ。</td>
+                    <td><strong>low=4</strong>, high=5</td>
+                </tr>
+                <tr>
+                    <td>2回目</td>
+                    <td>low=4, high=5</td>
+                    <td>(4+5)÷2 = 4 (端数切捨て)</td>
+                    <td>data[4]は45。<br>45 > 40 なので左半分へ。</td>
+                    <td>low=4, <strong>high=3</strong></td>
+                </tr>
+            </table>
+            <p><strong>3回目のループ突入前の判定：</strong><br>
+            <code>while (low <= high)</code> の条件式で、<code>low=4, high=3</code> を評価します。<br>
+            <code>4 <= 3</code> は「偽(False)」となるため、ループには入らずに終了します。<br>
+            最終的に <code>ans</code> は初期値の <code>-1</code> のままでプログラムが終了します。</p>
+            <p>したがって、ループ内の処理が実行された回数は<strong>2回</strong>です。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p3')">前のページに戻る</button>
+            <button onclick="switchPage('p5')">次の問題へ</button>
+        </div>
+    </div>
+
+    <div id="p5" class="page">
+        <h2>第3問（本番レベル・穴埋め）</h2>
+        <div class="question-box">
+            <p>以下のプログラムは、昇順に整列された配列 <code>data</code> から <code>target</code> と一致する要素を2分探索で探すものです。プログラム中の空欄 <code>[  a  ]</code> と <code>[  b  ]</code> に入れる式の組み合わせとして、適切なものはどれですか。</p>
+<pre class="pseudo-code"><code>low ← 1
+high ← dataの要素数
+ans ← -1
+
+while ( [  a  ] )
+    middle ← (low + high) ÷ 2 の商
+    if (data[middle] == target)
+        ans ← middle
+        break
+    elseif (data[middle] < target)
+        low ← middle + 1
+    else
+        high ← [  b  ]
+    endif
+endwhile</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q3"> ア: a = <code>low < high</code>　　, b = <code>middle - 1</code></label>
+            <label><input type="radio" name="q3"> イ: a = <code>low <= high</code>　, b = <code>middle - 1</code></label>
+            <label><input type="radio" name="q3"> ウ: a = <code>low == high</code>　, b = <code>middle - 1</code></label>
+            <label><input type="radio" name="q3"> エ: a = <code>low <= high</code>　, b = <code>middle</code></label>
+            <label><input type="radio" name="q3"> オ: a = <code>low < high</code>　　, b = <code>middle + 1</code></label>
+            <label><input type="radio" name="q3"> カ: a = <code>low >= high</code>　, b = <code>middle - 1</code></label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p6')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p6" class="page">
+        <h2>第3問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： イ</h3>
+            <p>2分探索における重要な「条件」と「範囲の更新」を問う問題です。</p>
+            <ul>
+                <li><strong>空欄 [ a ] について：</strong><br>
+                探索を続ける条件は「探索範囲が存在している間」です。<br>
+                左の指(low) と 右の指(high) が同じ場所を指している時（<code>low == high</code>）も、その1要素を調べる必要があるため、探索を続ける必要があります。<br>
+                左の指が右の指を追い越した時（<code>low > high</code> になった時）に初めて「探索範囲がなくなった（見つからなかった）」と判断してループを抜けます。したがって、正解は <code>low <= high</code> です。</li>
+                <br>
+                <li><strong>空欄 [ b ] について：</strong><br>
+                <code>else</code> ブロックに入るのは、<code>data[middle] > target</code> の場合、つまり「真ん中の値よりも、探している値が小さい」場合です。<br>
+                このとき、真ん中(middle)から右側には絶対に答えがないため、探索範囲を「左半分」に絞り込みます。<br>
+                すでに調べた <code>middle</code> の場所を再び範囲に含める必要はないため、右の指(high) を真ん中の1つ左、つまり <code>middle - 1</code> にズラします。</li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p5')">前のページに戻る</button>
+            <button onclick="alert('お疲れ様でした！全問終了です。')">終了</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchPage(targetId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        document.getElementById(targetId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アルゴリズム理解度チェック - 連結リスト編</title>
+<style>
+:root {
+--primary-color: #2563eb;
+--bg-color: #f8fafc;
+--surface-color: #ffffff;
+--text-main: #333333;
+--border-color: #e2e8f0;
+--code-bg: #1e293b;
+}
+body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+.container { max-width: 800px; margin: 0 auto; background: var(--surface-color); padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.page { display: none; }
+.page.active { display: block; }
+h1, h2 { color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+.question-box { background-color: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--primary-color); }
+.options-box { margin-bottom: 20px; }
+.options-box label { display: block; background: #f1f5f9; padding: 10px; margin-bottom: 8px; border-radius: 4px; cursor: pointer; border: 1px solid #cbd5e1; }
+.options-box label:hover { background: #e2e8f0; }
+    /* コードブロックのスタイル厳守 */
+    pre.pseudo-code { background-color: var(--code-bg); color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: Consolas, "Courier New", monospace, "Hiragino Kaku Gothic ProN", Meiryo; font-size: 1em; line-height: 1.5; margin: 15px 0; }
+    .explanation-box { background-color: #fffbeb; border-left: 5px solid #d97706; padding: 20px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
+    
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+    button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background-color 0.2s; }
+    button.btn-back { background-color: #64748b; }
+    button:hover { opacity: 0.9; }
+
+    /* トレース用装飾 */
+    .trace-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .trace-table th, .trace-table td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+    .trace-table th { background-color: #f1f5f9; }
+    .node-ptr { color: var(--primary-color); font-weight: bold; }
+    .highlight { color: #d97706; font-weight: bold; background: linear-gradient(transparent 70%, #fef3c7 70%); }
+</style>
+
+</head>
+<body>
+<div class="container">
+<div id="p1" class="page active">
+<h2>第1問（基礎トレース：ポインタの追跡）</h2>
+<div class="question-box">
+<p>ノードが <code>val</code>（データ本体）と <code>next</code>（次ポインタ）を持つ単方向の連結リストがある。以下のプログラムを実行した直後、<code>nodeA.next.next.val</code> の値はいくつになるか。</p>
+<pre class="pseudo-code"><code>〇ノード型: nodeA, nodeB, nodeC, nodeX
+// 各ノードの値を設定
+nodeA.val ← 10
+nodeB.val ← 20
+nodeC.val ← 30
+nodeX.val ← 99
+// 初期リストの作成 (A → B → C)
+nodeA.next ← nodeB
+nodeB.next ← nodeC
+nodeC.next ← null
+// 挿入処理
+nodeX.next ← nodeB.next
+nodeB.next ← nodeX</code></pre>
+</div>
+<div class="options-box">
+<label><input type="radio" name="q1"> ア: 10</label>
+<label><input type="radio" name="q1"> イ: 20</label>
+<label><input type="radio" name="q1"> ウ: 30</label>
+<label><input type="radio" name="q1"> エ: 99</label>
+<label><input type="radio" name="q1"> オ: null</label>
+<label><input type="radio" name="q1"> カ: 実行時エラーとなる</label>
+</div>
+<div class="btn-group">
+<button onclick="switchPage('p2')">解説を見る</button>
+</div>
+</div>
+<div id="p2" class="page">
+    <h2>第1問 解答と解説</h2>
+    <div class="explanation-box">
+        <h3>正解： エ (99)</h3>
+        <p>ポインタがどのように繋ぎ変えられたかを順番にトレースします。</p>
+        <ol>
+            <li><strong>初期状態：</strong> <code>nodeA(10) → nodeB(20) → nodeC(30) → null</code></li>
+            <li><strong><code>nodeX.next ← nodeB.next</code>：</strong><br>
+                nodeBの次（C）を、新しいノードXの次として設定します。<br>
+                これにより、Xの右腕がCに繋がります。<br>
+                <span style="color:#64748b;">(状態) X(99) → C(30)</span>
+            </li>
+            <li><strong><code>nodeB.next ← nodeX</code>：</strong><br>
+                nodeBの次を、ノードXに向け直します。<br>
+                <span style="color:#64748b;">(状態) B(20) → X(99)</span>
+            </li>
+        </ol>
+        <p>結果として、リスト全体の繋がりは <strong><code>A(10) → B(20) → X(99) → C(30) → null</code></strong> となります。ノードXはBとCの間に割り込みました。</p>
+        <p>問題で問われている <code>nodeA.next.next.val</code> をたどると：<br>
+            ① <code>nodeA.next</code> は <span class="highlight">nodeB</span><br>
+            ② <code>nodeB.next</code> は <span class="highlight">nodeX</span><br>
+            ③ <code>nodeX.val</code> は <span class="highlight">99</span><br>
+            したがって、答えは <strong>99</strong> です。
+        </p>
+    </div>
+    <div class="btn-group">
+        <button class="btn-back" onclick="switchPage('p1')">前のページに戻る</button>
+        <button onclick="switchPage('p3')">次の問題へ</button>
+    </div>
+</div>
+
+<div id="p3" class="page">
+    <h2>第2問（発展トレース：ループによる削除）</h2>
+    <div class="question-box">
+        <p>以下のプログラムは、単方向リストから特定の条件に合うノードを削除（スキップ）するものである。初期状態のリストが <strong><code>15 → 20 → 25 → 30 → 35 → null</code></strong> であり、先頭ノード（15）が変数 <code>head</code> に格納されているとき、プログラム実行後のリストの並び順として正しいものはどれか。</p>
+
+<pre class="pseudo-code"><code>〇ノード型: curr
+curr ← head
+while (curr.next != null)
+if (curr.next.val が 2 で割り切れる)
+// 削除（スキップ）処理
+curr.next ← curr.next.next
+else
+// 次のノードへ進む
+curr ← curr.next
+endif
+endwhile</code></pre>
+    </div>
+    <div class="options-box">
+        <label><input type="radio" name="q2"> ア: 15 → 20 → 30 → null</label>
+        <label><input type="radio" name="q2"> イ: 15 → 25 → 35 → null</label>
+        <label><input type="radio" name="q2"> ウ: 20 → 30 → null</label>
+        <label><input type="radio" name="q2"> エ: 25 → 35 → null</label>
+        <label><input type="radio" name="q2"> オ: 15 → 20 → 25 → 30 → 35 → null （変化なし）</label>
+        <label><input type="radio" name="q2"> カ: 15 → null</label>
+    </div>
+    <div class="btn-group">
+        <button onclick="switchPage('p4')">解説を見る</button>
+    </div>
+</div>
+
+<div id="p4" class="page">
+    <h2>第2問 解答と解説</h2>
+    <div class="explanation-box">
+        <h3>正解： イ (15 → 25 → 35 → null)</h3>
+        <p>このプログラムは<strong>「次のノードの値が偶数であれば、そのノードをスキップ（削除）する」</strong>という処理をリストの最後まで繰り返します。ポインタの動きをトレースします。</p>
+        
+        <table class="trace-table">
+            <tr>
+                <th>現在地(curr)</th>
+                <th>判定(curr.next.val)</th>
+                <th>実行される処理</th>
+                <th>リストの状態</th>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>20 (偶数)</td>
+                <td><code>curr.next ← curr.next.next</code><br><small>※15の次を25に向ける</small></td>
+                <td>15 → <strong>25</strong> → 30 → 35</td>
+            </tr>
+            <tr>
+                <td>15 <small>※移動なし</small></td>
+                <td>25 (奇数)</td>
+                <td><code>curr ← curr.next</code><br><small>※currを25に進める</small></td>
+                <td>15 → 25 → 30 → 35</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>30 (偶数)</td>
+                <td><code>curr.next ← curr.next.next</code><br><small>※25の次を35に向ける</small></td>
+                <td>15 → 25 → <strong>35</strong></td>
+            </tr>
+            <tr>
+                <td>25 <small>※移動なし</small></td>
+                <td>35 (奇数)</td>
+                <td><code>curr ← curr.next</code><br><small>※currを35に進める</small></td>
+                <td>15 → 25 → 35</td>
+            </tr>
+            <tr>
+                <td>35</td>
+                <td>null</td>
+                <td>whileループ終了</td>
+                <td>15 → 25 → 35 → null</td>
+            </tr>
+        </table>
+        
+        <p>削除（スキップ）を行った直後は、<code>curr</code> を進めないことがポイントです。これにより連続して偶数が来た場合でも見落とすことなく削除できます。最終的に偶数（20, 30）がリストから消え、<strong>15 → 25 → 35 → null</strong> となります。</p>
+    </div>
+    <div class="btn-group">
+        <button class="btn-back" onclick="switchPage('p3')">前のページに戻る</button>
+        <button onclick="switchPage('p5')">次の問題へ</button>
+    </div>
+</div>
+
+<div id="p5" class="page">
+    <h2>第3問（本番レベル・双方向リストへの挿入）</h2>
+    <div class="question-box">
+        <p>各ノードが <code>next</code>（次ポインタ）と <code>prev</code>（前ポインタ）を持つ<strong>双方向リスト</strong>において、ノードAの直後に新しいノードXを挿入するプログラムである。プログラム中の空欄 <code>[　a　]</code> に入れるべき適切な式はどれか。</p>
+        <p>※挿入前は、ノードAの直後にノードBが存在している（A ⇄ B）ものとする。</p>
+
+<pre class="pseudo-code"><code>関数 insertDoubly(ノード型: nodeA, ノード型: nodeX)
+// ① ノードXのポインタを設定する
+nodeX.prev ← nodeA
+nodeX.next ← nodeA.next
+// ② ノードAの後続ノード（B）が存在すれば、その prev を更新する
+if (nodeX.next != null)
+    [　a　] ← nodeX
+endif
+
+// ③ ノードAの next を更新する
+nodeA.next ← nodeX
+
+関数おわり</code></pre>
+    </div>
+    <div class="options-box">
+        <label><input type="radio" name="q3"> ア: nodeA.next.next</label>
+        <label><input type="radio" name="q3"> イ: nodeX.prev.next</label>
+        <label><input type="radio" name="q3"> ウ: nodeX.next.prev</label>
+        <label><input type="radio" name="q3"> エ: nodeA.prev.next</label>
+        <label><input type="radio" name="q3"> オ: nodeA.prev</label>
+        <label><input type="radio" name="q3"> カ: nodeX.prev</label>
+    </div>
+    <div class="btn-group">
+        <button onclick="switchPage('p6')">解説を見る</button>
+    </div>
+</div>
+
+<div id="p6" class="page">
+    <h2>第3問 解答と解説</h2>
+    <div class="explanation-box">
+        <h3>正解： ウ (nodeX.next.prev)</h3>
+        <p>双方向リストにノードを割り込ませる場合、合計で<strong>4本の矢印（Xのnext/prev、Aのnext、Bのprev）</strong>を繋ぎ変える必要があります。代入の順番に細心の注意が必要です。</p>
+        
+        <p>初期状態： <code>A ⇄ B</code><br>
+        ここからノードXを間に挟み、最終的に <code>A ⇄ X ⇄ B</code> にします。</p>
+        
+        <ol>
+            <li><code>nodeX.prev ← nodeA</code><br>
+                Xの左腕をAに繋ぎます。（A ← X）
+            </li>
+            <li><code>nodeX.next ← nodeA.next</code><br>
+                Aの次（つまりB）を、Xの右腕に繋ぎます。（X → B）<br>
+                ※この時点で <code>nodeX.next</code> は「ノードB」を指しています。
+            </li>
+            <li><code>[　a　] ← nodeX</code><br>
+                次に、Bの左腕（prev）をXに向け返す必要があります。現在、プログラム上で「ノードB」を指し示している変数は <code>nodeA.next</code> または <code>nodeX.next</code> です。<br>
+                したがって、Bのprevを書き換えるには <strong><code>nodeX.next.prev</code></strong>（または nodeA.next.prev）と記述し、それに X を代入します。
+            </li>
+            <li><code>nodeA.next ← nodeX</code><br>
+                最後に、Aの右腕（next）をXに繋ぎます。（A → X）<br>
+                <small>※これを先に実行してしまうと、Bの場所（nodeA.next）が迷子になってしまうため、必ず最後に実行します。</small>
+            </li>
+        </ol>
+        <p>よって、空欄には <strong><code>nodeX.next.prev</code></strong> が入ります。</p>
+    </div>
+    <div class="btn-group">
+        <button class="btn-back" onclick="switchPage('p5')">前のページに戻る</button>
+        <button onclick="alert('お疲れ様でした！全問終了です。')">終了</button>
+    </div>
+</div>
+
+</div>
+<script>
+function switchPage(targetId) {
+document.querySelectorAll('.page').forEach(page => {
+page.classList.remove('active');
+});
+document.getElementById(targetId).classList.add('active');
+window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
