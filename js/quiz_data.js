@@ -153,17 +153,17 @@ const quizData = {
         ]
     },
 
+    
+    // quiz_data.js 内の Stage 4 などの設定例
     stage4: {
-        title: "応用 ソート",
+        title: "Stage 4: 応用 ソート",
         topics: [
             {
-                id: "kou_sort",
-                title: "09 オブジェクト指向",
-                introHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html", 
-                
-            },
-            
+                id: "advanced_sort_module",
+                title: "探索・ソートアルゴリズム 特訓モジュール（全7問）",
+                 standaloneHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html" // そのまま読み込むHTML
+            }
         ]
-    },
+    }
 };
 
