@@ -1,169 +1,202 @@
 /**
  * 科目B アルゴリズム完全攻略ブートキャンプ
- * 問題・解説データ定義ファイル (quiz_data.js)
+ * メインロジック (main_app.js)
  */
 
-const quizData = {
-    // ＝＝＝＝ 第0層：チュートリアル（全7ステップ） ＝＝＝＝
-    stage0: {
-        title: "Stage 0: チュートリアル（アルゴリズムの歩き方）",
-        topics: [
-            {
-                id: "tut_01",
-                title: "01 科目Bとは？＆擬似言語の基礎",
-                introHTML: "資料html/00_チュートリアル/tut_01.html"
-            },
-            {
-                id: "tut_02",
-                title: "02 トレース実践① 変数の上書き",
-                introHTML: "資料html/00_チュートリアル/tut_02.html"
-            },
-            {
-                id: "tut_03",
-                title: "03 トレース実践② 関数呼び出し",
-                introHTML: "資料html/00_チュートリアル/tut_03.html"
-            },
-            {
-                id: "tut_04",
-                title: "04 トレース実践③ 条件分岐の順序",
-                introHTML: "資料html/00_チュートリアル/tut_04.html"
-            },
-            {
-                id: "tut_05",
-                title: "05 トレース実践④ ループ処理",
-                introHTML: "資料html/00_チュートリアル/tut_05.html"
-            },
-            {
-                id: "tut_06",
-                title: "06 トレース実践⑤ 配列の境界値",
-                introHTML: "資料html/00_チュートリアル/tut_06.html"
-            },
-            {
-                id: "tut_07",
-                title: "07 最終確認 ＆ Stage1解放！",
-                introHTML: "資料html/00_チュートリアル/tut_07_intro.html",
-                quizHTML:  "資料html/00_チュートリアル/tut_07_quiz.html"
-            }
-        ]
-    },
+let currentStageNum = null;
 
-    // ＝＝＝＝ 第1層 ＝＝＝＝
-    stage1: {
-        title: "Stage 1: 基礎ソート＋スタックキュー＋ゲーム木",
-        topics: [
-            {
-                id: "linear_sort",
-                title: "01 線形探索・線形ソート",
-                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/01_線形ソート/linear_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/01_線形ソート/linear_sort_quiz.html" 
-            },
-            {
-                id: "bubble_sort",
-                title: "02 バブルソート",
-                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/02_バブルソート/bubble_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/02_バブルソート/bubble_sort_quiz.html" 
-            },
-            {
-                id: "stack",
-                title: "07 スタック",
-                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/07_スタック/stack_intro.html", 
-                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/07_スタック/stack_quiz.html" 
-            },
-            {
-                id: "queue",
-                title: "08 キュー",
-                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/08_キュー/queue_intro.html", 
-                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/08_キュー/queue_quiz.html" 
-            },
-            {
-                id: "game_tree",
-                title: "15 ゲーム木",
-                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_intro.html", 
-                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_quiz.html" 
-            },
-            
-        ]
-    },
+// HTMLの読み込み完了時にプログレスバーを初期化
+document.addEventListener('DOMContentLoaded', () => {
+    updateProgressUI();
+});
 
-    // ＝＝＝＝ 第2層 ＝＝＝＝
-    stage2: {
-        title: "Stage 2: ソート残り＋単方向リスト",
-        topics: [
-            {
-                id: "selection_sort",
-                title: "03 選択ソート",
-                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/03_選択ソート/selection_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/03_選択ソート/selection_sort_quiz.html" 
-            },
-            {
-                id: "insertion_sort",
-                title: "04 挿入ソート",
-                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/04_挿入ソート/insertion_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/04_挿入ソート/insertion_sort_quiz.html" 
-            },
-            {
-                id: "quick_sort",
-                title: "05 クイックソート",
-                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/05_クイックソート/quick_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/05_クイックソート/quick_sort_quiz.html" 
-            },
-            {
-                id: "binary_sort",
-                title: "06 バイナリーソート",
-                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/06_バイナリーソート/binary_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/06_バイナリーソート/binary_sort_quiz.html" 
-            },
-            {
-                id: "singly_linked_list",
-                title: "単方向リスト",
-                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/単方向/singly_linked_intro.html", 
-                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/単方向/singly_linked_quiz.html" 
-            }
-        ]
-    },
+// ＝＝＝＝ ★新規：進捗率の計算とプログレスバー更新 ＝＝＝＝
+function updateProgressUI() {
+    const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
+    let totalTopics = 0;
+    
+    // quizDataから全トピック数をカウント
+    for (let stageKey in quizData) {
+        totalTopics += quizData[stageKey].topics.length;
+    }
+    
+    const clearedCount = clearedTopics.length;
+    const percent = totalTopics === 0 ? 0 : Math.floor((clearedCount / totalTopics) * 100);
 
-    // ＝＝＝＝ 第3層 ＝＝＝＝
-    stage3: {
-        title: "Stage 3: 再帰 指向 2分木",
-        topics: [
-            {
-                id: "oop",
-                title: "09 オブジェクト指向",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/09_オブジェクト指向/oop_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/09_オブジェクト指向/oop_quiz.html" 
-            },
-            {
-                id: "recursion",
-                title: "10 再帰関数",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/10_再帰関数/recursion_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/10_再帰関数/recursion_quiz.html" 
-            },
-            {
-                id: "merge_sort",
-                title: "11 マージソート",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/11_マージソート/merge_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/11_マージソート/merge_sort_quiz.html" 
-            },
-            {
-                id: "binary_tree",
-                title: "12 ２分木",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_quiz.html" 
-            }
-        ]
-    },
+    const progressBar = document.getElementById('total-progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    if (progressBar && progressText) {
+        progressBar.style.width = percent + '%';
+        progressText.innerText = `${percent}% (${clearedCount} / ${totalTopics} トピック)`;
+    }
+}
 
-    stage4: {
-        title: "応用 ソート",
-        topics: [
-            {
-                id: "kou_sort",
-                title: "09 オブジェクト指向",
-                introHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html", 
-                
-            },
-            
-        ]
-    },
-};
+// ＝＝＝＝ 第1層：ロードマップからステージを選択 ＝＝＝＝
+function selectStage(stageNum) {
+    currentStageNum = stageNum;
+    document.getElementById('roadmap-layer').style.display = 'none';
+    document.getElementById('learning-layer').style.display = 'block';
+    
+    const stageKey = `stage${stageNum}`;
+    
+    if (quizData[stageKey]) {
+        renderTopicMenu(quizData[stageKey]);
+    } else {
+        document.getElementById('dynamic-content-area').innerHTML = `
+            <div class="nav-header">
+                <button class="back-btn" onclick="backToRoadmap()">← ロードマップに戻る</button>
+                <h2 style="color:red; margin-left: 15px;">Stage ${stageNum} は現在準備中です。</h2>
+            </div>`;
+    }
+}
 
+// ＝＝＝＝ 第2層：ステージ内の項目メニューを描画 ＝＝＝＝
+function renderTopicMenu(stageData) {
+    const container = document.getElementById('dynamic-content-area');
+    const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
+    
+    let html = `
+        <div class="nav-header">
+            <button class="back-btn" onclick="backToRoadmap()">← ロードマップに戻る</button>
+            <h2 style="color: #004494; margin-left: 15px;">${stageData.title}</h2>
+        </div>
+        <div style="display: grid; gap: 15px; margin-top: 20px;">
+    `;
+    
+    stageData.topics.forEach(topic => {
+        // クリア状況に応じてボタンのデザインを変更
+        const isCleared = clearedTopics.includes(topic.id);
+        const badge = isCleared ? `<span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.9rem; margin-right: 10px;">✔ CLEAR</span>` : '';
+        const btnStyle = isCleared 
+            ? `border-color: #28a745; color: #155724; background: #d4edda;` 
+            : `border-color: #0056b3; color: #0056b3; background: #fff;`;
+
+        html += `<button onclick="startTopic('${topic.id}')" 
+                    style="padding: 15px; border: 2px solid; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; text-align: left; transition: 0.2s; ${btnStyle}">
+                    ${badge}▶ ${topic.title} を学習する
+                 </button>`;
+    });
+    
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+// ＝＝＝＝ 第3層：解説・問題タブを描画 ＝＝＝＝
+function startTopic(topicId) {
+    const stageData = quizData[`stage${currentStageNum}`];
+    const topic = stageData.topics.find(t => t.id === topicId);
+    if (!topic) return;
+
+    const container = document.getElementById('dynamic-content-area');
+    container.innerHTML = '<p style="text-align:center; font-weight:bold;">データを読み込み中...</p>';
+
+    Promise.all([
+        fetch(topic.introHTML).then(res => res.ok ? res.text() : Promise.reject(res)),
+        topic.quizHTML ? fetch(topic.quizHTML).then(res => res.ok ? res.text() : Promise.resolve("")) : Promise.resolve("")
+    ])
+    .then(([introData, quizDataHtml]) => {
+        
+        // ヘッダーにクリアボタン（またはクリア済み表記）を追加
+        const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
+        const isCleared = clearedTopics.includes(topic.id);
+        const clearBtnHTML = isCleared
+            ? `<span style="color: #28a745; font-weight: bold; margin-left: auto; font-size: 1.1rem;">✔ クリア済み</span>`
+            : `<button onclick="markAsCleared('${topic.id}')" style="margin-left: auto; background: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">このトピックをクリア</button>`;
+
+        container.innerHTML = `
+            <div class="nav-header" style="display: flex; align-items: center;">
+                <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
+                <h2 style="color: #004494; margin-left: 15px;">${topic.title}</h2>
+                ${clearBtnHTML}
+            </div>
+
+            <div class="main-tabs">
+                <button id="tab-btn-intro" class="main-tab-btn active" onclick="switchMainTab('intro')">📖 解説</button>
+                <button id="tab-btn-quiz" class="main-tab-btn" onclick="switchMainTab('quiz')">✍️ 問題</button>
+            </div>
+
+            <div id="main-tab-intro" class="main-tab-content active">${introData}</div>
+            <div id="main-tab-quiz" class="main-tab-content" style="display:none;">${quizDataHtml}</div>
+        `;
+    })
+    .catch(err => {
+        container.innerHTML = `
+            <div class="nav-header">
+                <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
+            </div>
+            <div style="background: #f8d7da; padding: 15px; color: #721c24; border-radius: 8px; margin-top: 15px;">
+                <strong>⚠️ 読み込みエラー:</strong> ファイルが見つかりません。パスを確認してください。<br>
+                ${err.url ? err.url : ''}
+            </div>`;
+    });
+}
+
+// ＝＝＝＝ メインのタブ切り替え処理 ＝＝＝＝
+function switchMainTab(tabName) {
+    document.getElementById('main-tab-intro').style.display = (tabName === 'intro') ? 'block' : 'none';
+    document.getElementById('main-tab-quiz').style.display = (tabName === 'quiz') ? 'block' : 'none';
+    
+    if (tabName === 'intro') {
+        document.getElementById('tab-btn-intro').classList.add('active');
+        document.getElementById('tab-btn-quiz').classList.remove('active');
+    } else {
+        document.getElementById('tab-btn-quiz').classList.add('active');
+        document.getElementById('tab-btn-intro').classList.remove('active');
+    }
+}
+
+// ＝＝＝＝ トップ画面（第1層）に戻る処理 ＝＝＝＝
+function backToRoadmap() {
+    document.getElementById('learning-layer').style.display = 'none';
+    document.getElementById('roadmap-layer').style.display = 'block';
+    document.getElementById('dynamic-content-area').innerHTML = ''; 
+    updateProgressUI();
+}
+
+// ＝＝＝＝ クイズ画面のページ切り替え処理 ＝＝＝＝
+function switchPage(targetId) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    const targetPage = document.getElementById(targetId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+}
+
+// ＝＝＝＝ ★新規：トピックをクリア状態にする処理 ＝＝＝＝
+function markAsCleared(topicId) {
+    let clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
+    if (!clearedTopics.includes(topicId)) {
+        clearedTopics.push(topicId);
+        localStorage.setItem('fe_algo_cleared_topics', JSON.stringify(clearedTopics));
+    }
+    
+    updateProgressUI();
+    // 画面を再描画して「✔ クリア済み」テキストに切り替える
+    startTopic(topicId);
+}
+
+// ＝＝＝＝ ★新規：全進捗リセット（デモ用） ＝＝＝＝
+function resetProgress() {
+    if(confirm("すべての学習進捗をリセットしますか？ (デモ・動作確認用)")) {
+        localStorage.removeItem('fe_algo_cleared_topics');
+        updateProgressUI();
+        
+        // もし現在メニュー画面を開いていたら再描画する
+        if (document.getElementById('learning-layer').style.display === 'block' && currentStageNum !== null) {
+            renderTopicMenu(quizData[`stage${currentStageNum}`]);
+        }
+        alert("進捗をリセットしました。");
+    }
+}
+
+// ＝＝＝＝ 互換性維持：古いチュートリアル完了ボタン用 ＝＝＝＝
+function completeTutorial() {
+    // 既存の tut_07.html 内のボタンが押されたときのエラーを防ぎつつ、クリア扱いにする
+    markAsCleared('tut_07');
+    alert('🎉 チュートリアルクリア！進捗が保存されました！');
+    backToRoadmap();
+}
