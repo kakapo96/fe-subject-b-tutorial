@@ -3,8 +3,16 @@
  * メインロジック (main_app.js)
  */
 
- let currentStageNum = null;   // 現在どのステージを見ているかを記憶する変数
- let isTutorialCleared = false; // チュートリアルをクリアしたかどうかを管理するフラグ
+let currentStageNum = null;
+// localStorageから値を取得（文字列として保存されるため 'true' と比較）
+let isTutorialCleared = localStorage.getItem('fe_algo_tutorial_cleared') === 'true';
+
+// HTMLの読み込み完了時にクリア状態をチェックし、UIを更新
+document.addEventListener('DOMContentLoaded', () => {
+    if (isTutorialCleared) {
+        updateStage1UI();
+    }
+});
  
  // ＝＝＝＝ 第1層：ロードマップからステージを選択 ＝＝＝＝
  function selectStage(stageNum) {
@@ -158,3 +166,18 @@
          stage1Btn.innerText = '学習を開始';     // ボタンの文字を変更
      }
  }
+
+ function completeTutorial() {
+    isTutorialCleared = true;
+    
+    // localStorageにクリア状態を保存
+    localStorage.setItem('fe_algo_tutorial_cleared', 'true');
+    
+    alert('🎉 チュートリアルクリア！\nStage 1「基礎編」が解放されました！');
+    
+    // メイン画面のUIをアンロック状態に書き換える
+    updateStage1UI();
+    
+    // ロードマップ画面に自動で戻す
+    backToRoadmap();
+}
