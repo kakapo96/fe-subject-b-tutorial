@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基本情報技術者試験 科目B アルゴリズム完全攻略ブートキャンプ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="global-alert" class="alert-banner">
+        <p><strong>⚠️ 最重要注意事項：</strong>トレース時は白紙の紙を用意して解くこと。頭の中で解こうとしないこと。</p>
+    </div>
+
+    <div class="app-container">
+        
+        <header class="main-header">
+            <h1>基本情報処理 科目B アルゴリズム完全攻略ブートキャンプ</h1>
+        </header>
+
+        <section id="roadmap-layer">
+            
+            <div class="progress-section">
+                <div class="progress-bar-container">
+                    <div id="total-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="stage-grid">
+                
+                <div id="stage-card-0" class="stage-card">
+                    <div class="stage-number">0</div>
+                    <div class="stage-content">
+                        <h3>Stage 0: チュートリアル</h3>
+                        <div class="stage-icon-placeholder">[初学者はここから！]</div>
+                        <button class="start-stage-btn" onclick="selectStage(0)">学習を開始</button>
+                    </div>
+                </div>
+
+                <div id="stage-card-1" class="stage-card locked">
+                    <div class="stage-number">1</div>
+                    <div class="stage-content">
+                        <h3>Stage 1: 基礎（ソート系・再帰・オブジェクト指向）</h3>
+                        <div class="stage-icon-placeholder">[紹介→簡単問題のループ]</div>
+                        <button id="btn-stage-1" class="start-stage-btn" onclick="selectStage(1)" disabled>チュートリアルクリアで解放</button>
+                    </div>
+                </div>
+
+                <div id="stage-card-2" class="stage-card locked">
+                    <div class="stage-number">2</div>
+                    <div class="stage-content">
+                        <h3>Stage 2: 各項目のレベルアップ問題</h3>
+                        <div class="stage-icon-placeholder">[応用トレース力向上]</div>
+                        <button class="start-stage-btn" onclick="selectStage(2)" disabled>ロック中</button>
+                    </div>
+                </div>
+
+                <div id="stage-card-3" class="stage-card locked">
+                    <div class="stage-number">3</div>
+                    <div class="stage-content">
+                        <h3>Stage 3: 初見トレース対策問題1</h3>
+                        <div class="stage-icon-placeholder">[一見簡単だが焦る問題]</div>
+                        <button class="start-stage-btn" onclick="selectStage(3)" disabled>ロック中</button>
+                    </div>
+                </div>
+
+                <div id="stage-card-4" class="stage-card locked">
+                    <div class="stage-number">4</div>
+                    <div class="stage-content">
+                        <h3>Stage 4: 初見トレース対策問題2</h3>
+                        <div class="stage-icon-placeholder">[複雑トレース]</div>
+                        <button class="start-stage-btn" onclick="selectStage(4)" disabled>ロック中</button>
+                    </div>
+                </div>
+
+                <div id="stage-card-5" class="stage-card locked">
+                    <div class="stage-number">5</div>
+                    <div class="stage-content">
+                        <h3>Stage 5: 本番仕様の穴埋め形式対策</h3>
+                        <div class="stage-icon-placeholder">[本番形式の重点網羅]</div>
+                        <button class="start-stage-btn" onclick="selectStage(5)" disabled>ロック中</button>
+                    </div>
+                </div>
+
+                <div id="stage-card-6" class="stage-card locked">
+                    <div class="stage-number">6</div>
+                    <div class="stage-content">
+                        <h3>Stage 6: 最終トレース力極限問題 ＆ 文章題対策</h3>
+                        <div class="stage-icon-placeholder">[複合型・究極の難問群]</div>
+                        <button class="start-stage-btn" onclick="selectStage(6)" disabled>ロック中</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="learning-layer" style="display: none;">
+            <div id="dynamic-content-area"></div>
+        </section>
+
+    </div> <script src="js/quiz_data.js"></script>
+    <script src="js/main_app.js"></script>
+</body>
+</html>
