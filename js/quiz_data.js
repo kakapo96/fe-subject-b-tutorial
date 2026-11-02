@@ -3,7 +3,7 @@
  * 問題・解説データ定義ファイル (quiz_data.js)
  */
 
- const quizData = {
+const quizData = {
     // ＝＝＝＝ 第0層：チュートリアル（全7ステップ） ＝＝＝＝
     stage0: {
         title: "Stage 0: チュートリアル（アルゴリズムの歩き方）",
@@ -47,99 +47,113 @@
         ]
     },
 
-    // ＝＝＝＝ 第1層：基礎編（全15項目） ＝＝＝＝
+    // ＝＝＝＝ 第1層 ＝＝＝＝
     stage1: {
-        title: "Stage 1: 基礎（ソート系・再帰・オブジェクト指向）",
+        title: "Stage 1: 基礎ソート＋スタックキュー＋ゲーム木",
         topics: [
             {
                 id: "linear_sort",
                 title: "01 線形探索・線形ソート",
-                introHTML: "資料html/01_線形ソート/linear_sort_intro.html", 
-                quizHTML:  "資料html/01_線形ソート/linear_sort_quiz.html" 
+                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/01_線形ソート/linear_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/01_線形ソート/linear_sort_quiz.html" 
             },
             {
                 id: "bubble_sort",
                 title: "02 バブルソート",
-                introHTML: "資料html/02_バブルソート/bubble_sort_intro.html", 
-                quizHTML:  "資料html/02_バブルソート/bubble_sort_quiz.html" 
-            },
-            {
-                id: "selection_sort",
-                title: "03 選択ソート",
-                introHTML: "資料html/03_選択ソート/selection_sort_intro.html", 
-                quizHTML:  "資料html/03_選択ソート/selection_sort_quiz.html" 
-            },
-            {
-                id: "insertion_sort",
-                title: "04 挿入ソート",
-                introHTML: "資料html/04_挿入ソート/insertion_sort_intro.html", 
-                quizHTML:  "資料html/04_挿入ソート/insertion_sort_quiz.html" 
-            },
-            {
-                id: "quick_sort",
-                title: "05 クイックソート",
-                introHTML: "資料html/05_クイックソート/quick_sort_intro.html", 
-                quizHTML:  "資料html/05_クイックソート/quick_sort_quiz.html" 
-            },
-            {
-                id: "binary_sort",
-                title: "06 バイナリーソート",
-                introHTML: "資料html/06_バイナリーソート/binary_sort_intro.html", 
-                quizHTML:  "資料html/06_バイナリーソート/binary_sort_quiz.html" 
+                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/02_バブルソート/bubble_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/02_バブルソート/bubble_sort_quiz.html" 
             },
             {
                 id: "stack",
                 title: "07 スタック",
-                introHTML: "資料html/07_スタック/stack_intro.html", 
-                quizHTML:  "資料html/07_スタック/stack_quiz.html" 
+                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/07_スタック/stack_intro.html", 
+                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/07_スタック/stack_quiz.html" 
             },
             {
                 id: "queue",
                 title: "08 キュー",
-                introHTML: "資料html/08_キュー/queue_intro.html", 
-                quizHTML:  "資料html/08_キュー/queue_quiz.html" 
-            },
-            {
-                id: "oop",
-                title: "09 オブジェクト指向",
-                introHTML: "資料html/09_オブジェクト指向/oop_intro.html", 
-                quizHTML:  "資料html/09_オブジェクト指向/oop_quiz.html" 
-            },
-            {
-                id: "recursion",
-                title: "10 再帰関数",
-                introHTML: "資料html/10_再帰関数/recursion_intro.html", 
-                quizHTML:  "資料html/10_再帰関数/recursion_quiz.html" 
-            },
-            {
-                id: "merge_sort",
-                title: "11 マージソート",
-                introHTML: "資料html/11_マージソート/merge_sort_intro.html", 
-                quizHTML:  "資料html/11_マージソート/merge_sort_quiz.html" 
-            },
-            {
-                id: "binary_tree",
-                title: "12 ２分木",
-                introHTML: "資料html/12_2分木/binary_tree_intro.html", 
-                quizHTML:  "資料html/12_2分木/binary_tree_quiz.html" 
-            },
-            {
-                id: "bit_operation",
-                title: "13 n進数ビット操作",
-                introHTML: "資料html/13_n進数ビット操作/bit_operation_intro.html", 
-                quizHTML:  "資料html/13_n進数ビット操作/bit_operation_quiz.html" 
-            },
-            {
-                id: "linked_list",
-                title: "14 連結リスト",
-                introHTML: "資料html/14_連結リスト/linked_list_intro.html", 
-                quizHTML:  "資料html/14_連結リスト/linked_list_quiz.html" 
+                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/08_キュー/queue_intro.html", 
+                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/08_キュー/queue_quiz.html" 
             },
             {
                 id: "game_tree",
                 title: "15 ゲーム木",
-                introHTML: "資料html/15_ゲーム木/game_tree_intro.html", 
-                quizHTML:  "資料html/15_ゲーム木/game_tree_quiz.html" 
+                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_intro.html", 
+                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ゲーム木/game_tree_quiz.html" 
+            },
+            {
+                id: "minimax",
+                title: "15 ミニマックス法",
+                introHTML: "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ミニマックス法/minimax_intro.html", 
+                quizHTML:  "資料html/ステージ(1) 基礎ソート＋スタックキュー＋ゲーム木/15_ミニマックス法/minimax_quiz.html" 
+            }
+        ]
+    },
+
+    // ＝＝＝＝ 第2層 ＝＝＝＝
+    stage2: {
+        title: "Stage 2: ソート残り＋単方向リスト",
+        topics: [
+            {
+                id: "selection_sort",
+                title: "03 選択ソート",
+                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/03_選択ソート/selection_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/03_選択ソート/selection_sort_quiz.html" 
+            },
+            {
+                id: "insertion_sort",
+                title: "04 挿入ソート",
+                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/04_挿入ソート/insertion_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/04_挿入ソート/insertion_sort_quiz.html" 
+            },
+            {
+                id: "quick_sort",
+                title: "05 クイックソート",
+                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/05_クイックソート/quick_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/05_クイックソート/quick_sort_quiz.html" 
+            },
+            {
+                id: "binary_sort",
+                title: "06 バイナリーソート",
+                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/06_バイナリーソート/binary_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/06_バイナリーソート/binary_sort_quiz.html" 
+            },
+            {
+                id: "singly_linked_list",
+                title: "単方向リスト",
+                introHTML: "資料html/ステージ(2) ソート残り＋単方向リスト/単方向/singly_linked_intro.html", 
+                quizHTML:  "資料html/ステージ(2) ソート残り＋単方向リスト/単方向/singly_linked_quiz.html" 
+            }
+        ]
+    },
+
+    // ＝＝＝＝ 第3層 ＝＝＝＝
+    stage3: {
+        title: "Stage 3: 再帰 指向 2分木",
+        topics: [
+            {
+                id: "oop",
+                title: "09 オブジェクト指向",
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/09_オブジェクト指向/oop_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/09_オブジェクト指向/oop_quiz.html" 
+            },
+            {
+                id: "recursion",
+                title: "10 再帰関数",
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/10_再帰関数/recursion_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/10_再帰関数/recursion_quiz.html" 
+            },
+            {
+                id: "merge_sort",
+                title: "11 マージソート",
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/11_マージソート/merge_sort_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/11_マージソート/merge_sort_quiz.html" 
+            },
+            {
+                id: "binary_tree",
+                title: "12 ２分木",
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_quiz.html" 
             }
         ]
     }
