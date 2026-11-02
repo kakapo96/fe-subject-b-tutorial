@@ -1,0 +1,269 @@
+<style>
+    .tut-step-container {
+        max-width: 840px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 35px;
+        border-radius: 12px;
+        color: #333333;
+        line-height: 1.8;
+    }
+    .tut-step-container h1 {
+        font-size: 1.6rem;
+        color: #004494;
+        border-bottom: 3px solid #cce0ff;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+    .tut-step-container p {
+        margin-bottom: 1.5em;
+    }
+    
+    /* コードエリア */
+    .code-section-box {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: 'Consolas', monospace;
+        font-size: 1.05rem;
+        margin-bottom: 30px;
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .code-line-item {
+        margin: 4px 0;
+        padding: 2px 8px;
+        border-radius: 4px;
+        display: flex;
+    }
+    .line-indent {
+        margin-left: 20px;
+    }
+    .line-num {
+        color: #858585;
+        width: 30px;
+        display: inline-block;
+        user-select: none;
+    }
+    .kw { color: #c678dd; font-weight: bold; }
+    .kw-type { color: #569cd6; font-weight: bold; }
+    .str { color: #ce9178; }
+    .com { color: #6a9955; font-style: italic; }
+    
+    /* トレース解説カード */
+    .trace-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        margin-top: 30px;
+    }
+    .trace-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #0056b3;
+        border-radius: 6px;
+        padding: 20px;
+    }
+    .trace-card h3 {
+        margin-top: 0;
+        color: #004494;
+        font-size: 1.2rem;
+        border-bottom: 1px dashed #cbd5e1;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    
+    /* 関数呼び出しの視覚化（スタック・行き帰り） */
+    .memo-simulation {
+        background: #fffdeb;
+        border: 2px dashed #ece6b0;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 15px;
+        font-family: 'Consolas', monospace;
+    }
+    .memo-title {
+        font-size: 0.9rem;
+        color: #856404;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    /* 行き帰りのビジュアルフロー */
+    .stack-flow {
+        display: block;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 12px;
+        margin-top: 5px;
+    }
+    .stack-layer {
+        padding: 6px 12px;
+        margin: 4px 0;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 0.95rem;
+    }
+    .layer-main { background: #e0f2fe; color: #0369a1; border-left: 4px solid #0284c7; }
+    .layer-a { background: #f3e8ff; color: #6d28d9; border-left: 4px solid #7c3aed; margin-left: 15px; }
+    .layer-b { background: #fce7f3; color: #be185d; border-left: 4px solid #db2777; margin-left: 30px; }
+    
+    .direction-arrow {
+        color: #0284c7;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin: 5px 0;
+    }
+    .return-val {
+        color: #be185d;
+        font-weight: bold;
+        background: #ffe4e6;
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    /* 罠の警告 */
+    .trap-alert-box {
+        background: #fff3e0;
+        border-left: 5px solid #ff9800;
+        padding: 20px;
+        border-radius: 0 8px 8px 0;
+        margin-top: 35px;
+    }
+    .trap-alert-box h4 {
+        margin-top: 0;
+        color: #e65100;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    .important-text {
+        font-weight: bold;
+        background: linear-gradient(transparent 70%, #ffc107 70%);
+    }
+</style>
+
+<div class="tut-step-container">
+    <h1>03 トレース実践② 関数呼び出しのネストと「行き帰り」の法則</h1>
+    <p>ステップ3では、試験で非常によく出る<strong>「関数（手続き）のネスト（入れ子）呼び出し」</strong>を攻略します！<br>
+    プログラムが別の関数を呼び出すと、実行場所が別の場所にワープします。そして、呼び出された関数が <code>return（戻り値）</code> を返した瞬間に、元の場所へ逆戻りします。この「行って、戻ってくる」流れを紙の上で正確に整理する方法を学びましょう。</p>
+
+    <!-- コード全体像 -->
+    <div class="code-section-box">
+        <div class="code-line-item"><span class="line-num">1</span><span><span class="kw">手続き</span>: main()</span></div>
+        <div class="code-line-item"><span class="line-num">2</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw-type">文字列型</span>: result ← <span class="str">""</span></span></div>
+        <div class="code-line-item"><span class="line-num">3</span><span>&nbsp;&nbsp;&nbsp;&nbsp;result ← procA(<span class="str">"1"</span>)</span></div>
+        <div class="code-line-item"><span class="line-num">4</span><span>&nbsp;&nbsp;&nbsp;&nbsp;出力(result)</span></div>
+        <div class="code-line-item"><span class="line-num">5</span><span></span></div>
+        <div class="code-line-item"><span class="line-num">6</span><span><span class="kw-type">文字列型</span>: procA(<span class="kw-type">文字列型</span>: s)</span></div>
+        <div class="code-line-item"><span class="line-num">7</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw-type">文字列型</span>: temp ← procB(s)</span></div>
+        <div class="code-line-item"><span class="line-num">8</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> temp + <span class="str">"A"</span></span></div>
+        <div class="code-line-item"><span class="line-num">9</span><span></span></div>
+        <div class="code-line-item"><span class="line-num">10</span><span><span class="kw-type">文字列型</span>: procB(<span class="kw-type">文字列型</span>: s)</span></div>
+        <div class="code-line-item"><span class="line-num">11</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">"B"</span> + s + <span class="str">"C"</span></span></div>
+        <div class="code-line-item"><span class="line-num">12</span><span>選択肢</span></div>
+        <div class="code-line-item"><span class="line-num">13</span><span>ア. 1BCA</span></div>
+        <div class="code-line-item"><span class="line-num">14</span><span>イ. B1CA</span></div>
+        <div class="code-line-item"><span class="line-num">15</span><span>ウ. AB1C</span></div>
+        <div class="code-line-item"><span class="line-num">16</span><span>エ. B1AC</span></div>
+        
+
+
+
+    </div>
+
+    <h2>関数のワープを追いかける実況トレース</h2>
+    
+    <div class="trace-flow">
+        
+        <!-- ステップ1：mainの開始 -->
+        <div class="trace-card">
+            <h3>【1】 すべての大元、main() からスタート！</h3>
+            <p>プログラムは <code>main()</code> から動き出します。2行目で <code>result</code> という空の箱を作ったあと、3行目で <code>procA("1")</code> を呼び出しています。<br>
+            ここでプログラムは実行を一時ストップし、<span class="important-text">「"1"」というお土産（引数）を持って、6行目の <code>procA</code> へワープします。</span></p>
+            
+            <div class="memo-simulation">
+                <div class="memo-title">⏳ 現在の関数の重なり状態（下にあるほど待機中）：</div>
+                <div class="stack-flow">
+                    <div class="stack-layer layer-main">▶ main() [3行目で一時停止中・procAの結果待ち]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ステップ2：procAの開始 -->
+        <div class="trace-card" style="border-left-color: #7c3aed;">
+            <h3>【2】 procA にワープ！さらに奥へ潜る</h3>
+            <p>6行目の <code>procA</code> に到着しました。渡された引数 <code>s</code> の中身は <code>"1"</code> です。<br>
+            次に7行目を見ると、なんと <code>temp ← procB(s)</code> とあり、さらに別の関数 <code>procB</code> を呼び出しています！<br>
+            ここでも <code>procA</code> は一時停止し、<span class="important-text">「"1"」を持って、さらに10行目の <code>procB</code> へ深くもぐりこみます。</span></p>
+            
+            <div class="memo-simulation">
+                <div class="memo-title">⏳ 現在の関数の重なり状態：</div>
+                <div class="stack-flow">
+                    <div class="stack-layer layer-a">▶ procA(s="1") [7行目で一時停止中・procBの結果待ち]</div>
+                    <div class="stack-layer layer-main" style="opacity: 0.6;">main() [一時停止中]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ステップ3：procBの実行とリターン -->
+        <div class="trace-card" style="border-left-color: #db2777;">
+            <h3>【3】 一番奥底の procB を実行 ＆ 初めての脱出（リターン）</h3>
+            <p>10行目の <code>procB</code> に辿り着きました。ここでの引数 <code>s</code> も <code>"1"</code> です。<br>
+            11行目の <code>return "B" + s + "C"</code> を計算します。文字を合体させると <code>"B" + "1" + "C" = "B1C"</code> になります。<br>
+            <code>return</code> が発動したため、procBの仕事はこれで終了です！<br>
+            <span class="important-text">お土産として確定した文字列 <span class="return-val">"B1C"</span> を抱えて、呼び出し元だった <code>procA</code> の7行目へと逆戻りします。</span></p>
+            
+            <div class="memo-simulation">
+                <div class="memo-title">⏳ 現在の関数の重なり状態：</div>
+                <div class="stack-flow">
+                    <div class="stack-layer layer-b">⚙️ procB(s="1") ─── 計算結果: "B1C" を持って戻る ➔</div>
+                    <div class="stack-layer layer-a" style="opacity: 0.6;">procA(s="1") [待機中]</div>
+                    <div class="stack-layer layer-main" style="opacity: 0.6;">main() [待機中]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ステップ4：procAの再開とリターン -->
+        <div class="trace-card" style="border-left-color: #7c3aed;">
+            <h3>【4】 procA が再開！最後の文字合体</h3>
+            <p>7行目の <code>procA</code> に戻ってきました！待機していた <code>temp</code> の中に、さっき戻ってきた <span class="return-val">"B1C"</span> が無事に入ります。<br>
+            続く8行目で <code>return temp + "A"</code> を実行します。現在の <code>temp</code> は <code>"B1C"</code> なので、合体させると <code>"B1C" + "A" = "B1CA"</code> になります。<br>
+            仕事が終わったので、この <span class="return-val">"B1CA"</span> を持って、最初の大元である <code>main()</code> の3行目へと戻っていきます。</p>
+            
+            <div class="memo-simulation">
+                <div class="memo-title">⏳ 現在の関数の重なり状態：</div>
+                <div class="stack-flow">
+                    <div class="stack-layer layer-a">⚙️ procA(s="1") ─── temp("B1C") + "A" = "B1CA" を持って戻る ➔</div>
+                    <div class="stack-layer layer-main" style="opacity: 0.6;">main() [待機中]</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ステップ5：mainの出力 -->
+        <div class="trace-card" style="border-left-color: #0056b3;">
+            <h3>【5】 main() に帰還、そして最終出力</h3>
+            <p>ついに <code>main()</code> の3行目に戻ってきました！戻り値の <span class="return-val">"B1CA"</span> が変数 <code>result</code> に代入されます。<br>
+            最後に4行目の <code>出力(result)</code> が実行され、画面に <strong>B1CA</strong> が表示されてプログラム全体が終了します！</p>
+            
+            <div class="memo-simulation">
+                <div class="memo-title">🎉 最終的な実行結果：</div>
+                <div style="background: #000; color: #4ade80; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 1.2rem; font-weight: bold; text-align: center;">
+                    B1CA
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 罠まとめ -->
+    <div class="trap-alert-box">
+        <h4>🚨 この問題に潜む「上から下へ読む視線」の罠</h4>
+        <p style="margin-bottom: 0;">
+            人間の目は、コードが上から下に並んでいると、無意識に「Aの処理が終わったあとにBの処理が進む」と思い込んでしまいがちです。その結果、文字の並びにつられて <code>"1BCA"</code> や <code>"AB1C"</code> のような間違った選択肢を選んでしまいます。<br>
+            しかしトレースをしてみると分かる通り、<stong>実際に一番最初に計算が完了して文字が作られるのは、一番奥底にある `procB` です！</stong><br>
+            関数のネストに出会ったら、手元の紙の余白に矢印を書き、「どこに潜っていって、何を持ってどこに戻るのか」をドミノ倒しのようにメモしながら逆算していくのが、ケアレスミスを完全に防ぐ最強のテクニックです。
+        </p>
+    </div>
+</div>

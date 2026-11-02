@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【科目B対策】キューの完全理解</title>
+    <style>
+        /* =========================================
+           Design System & Base Variables
+        ========================================= */
+        :root {
+            --primary-color: #ec4899; /* キューのテーマカラー（ピンク）に変更 */
+            --primary-light: #fce7f3;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+            --font-base: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            --font-mono: Consolas, "Courier New", monospace, "Hiragino Kaku Gothic ProN", Meiryo;
+        }
+
+        /* =========================================
+           Reset & Base Styles
+        ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-base); color: var(--text-main); background-color: var(--bg-color); line-height: 1.8; font-size: 16px; padding: 40px 20px; }
+
+        /* =========================================
+           Layout & Typography
+        ========================================= */
+        .container { max-width: 840px; margin: 0 auto; background-color: var(--surface-color); padding: 60px 50px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        h1 { font-size: 1.8rem; color: var(--primary-color); border-bottom: 3px solid var(--primary-light); padding-bottom: 10px; margin-bottom: 30px; line-height: 1.4; }
+        h2 { font-size: 1.4rem; color: var(--text-main); margin: 40px 0 20px; padding: 10px 15px; background-color: var(--primary-light); border-left: 5px solid var(--primary-color); border-radius: 0 4px 4px 0; }
+        h3 { font-size: 1.2rem; color: var(--primary-color); margin: 30px 0 15px; display: flex; align-items: center; }
+        h3::before { content: "💡"; margin-right: 8px; }
+        p { margin-bottom: 1.5em; }
+        strong { color: #be185d; font-weight: bold; background: linear-gradient(transparent 70%, #fce7f3 70%); }
+
+        /* =========================================
+           Simulation Steps Styling
+        ========================================= */
+        .rule-box { background-color: #fdf2f8; border-left: 5px solid var(--primary-color); padding: 15px 20px; margin-bottom: 25px; border-radius: 4px; }
+        .rule-box h4 { margin-top: 0; color: #be185d; margin-bottom: 10px; }
+        
+        .sim-card { background-color: #f8fafc; border: 1px solid var(--border-color); border-left: 4px solid var(--primary-color); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+        .sim-card h4 { margin-top: 0; color: #334155; border-bottom: 1px dashed #cbd5e1; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .sim-card ul { margin-bottom: 0; list-style-type: none; padding-left: 1.2em; }
+        .sim-card li { margin-bottom: 0.5rem; }
+        .sim-card li::before { content: "•"; color: var(--primary-color); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+
+        .array-view { font-family: var(--font-mono); font-size: 1.1em; background-color: #fff; padding: 0.3rem 0.6rem; border: 1px solid var(--border-color); border-radius: 4px; display: inline-block; margin-top: 0.2rem; letter-spacing: 1px; }
+
+        /* =========================================
+           Components (Code Block)
+        ========================================= */
+        .code-wrapper { background-color: var(--code-bg); border-radius: 8px; padding: 20px; margin: 25px 0; overflow-x: auto; color: #e2e8f0; }
+        .code-wrapper pre { font-family: var(--font-mono); font-size: 0.95rem; line-height: 1.6; }
+        .code-comment { color: #4ade80; } /* コメントは緑 */
+        .kw { color: #c678dd; font-weight: bold; } /* キーワード */
+        .var { color: #9cdcfe; } /* 変数 */
+        .op { color: #d4d4d4; } /* 演算子 */
+        .num { color: #d19a66; } /* 数字 */
+        .func { color: #61afef; } /* 関数名 */
+
+        /* =========================================
+           Callout / Exam Tips
+        ========================================= */
+        .callout { background-color: #ffffff; border: 2px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 25px; transition: border-color 0.3s ease; }
+        .callout:hover { border-color: var(--primary-color); }
+        dl { display: grid; grid-template-columns: 100px 1fr; gap: 15px 10px; }
+        dt { font-weight: bold; color: var(--text-muted); text-align: right; padding-top: 2px; }
+        dd { margin: 0; }
+        .dd-answer { font-family: var(--font-mono); font-weight: bold; color: var(--primary-color); font-size: 1.1rem; background-color: var(--primary-light); padding: 4px 10px; border-radius: 4px; display: inline-block; border: 1px dashed var(--primary-color); }
+
+        .conclusion-box { background-color: var(--primary-color); color: white; padding: 25px; border-radius: 8px; margin-top: 40px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <article class="container">
+        
+        <header>
+            <h1>【科目B対策】データ構造：キュー</h1>
+            <p>データ構造とは、データをメモリ上に「どうやって並べて保存するか」のルールのことです。<br>
+            試験でよく出る「キュー」は、<strong>「レジの順番待ち」</strong>に例えると一瞬で理解できます。</p>
+        </header>
+
+        <section>
+            <h2>テーマ：レジの順番待ち（キュー / Queue）</h2>
+            <p>スーパーのレジの順番待ち（行列）です。先に並んだ人から順番にお会計をしてもらえます。横入りは禁止です。</p>
+            
+            <div class="rule-box">
+                <h4>キューのルール：FIFO（First In, First Out / 先入れ先出し）</h4>
+                <p style="margin-bottom: 0;"><strong>「最初に入れたデータが、最初に取り出される」</strong><br>
+                ・入れる操作を <strong>Enqueue（エンキュー）</strong> と呼ぶ。<br>
+                ・出す操作を <strong>Dequeue（デキュー）</strong> と呼ぶ。<br>
+                ・「先頭」と「末尾」の2つの指差し棒（<strong>Head</strong> と <strong>Tail</strong>）を使うのが特徴。</p>
+            </div>
+
+            <div class="sim-card">
+                <h4>【動きのシミュレーション】 トンネルを通り抜ける</h4>
+                <ul>
+                    <li>初期状態（空っぽ）： <code>[ , , , ]</code></li>
+                    <li><strong>Enqueue(10)</strong>： <code>[10, , , ]</code> （末尾[Tail]から入る）</li>
+                    <li><strong>Enqueue(20)</strong>： <code>[10, 20, , ]</code> （後ろに並ぶ）</li>
+                    <li><strong>Enqueue(30)</strong>： <code>[10, 20, 30, ]</code> （さらに後ろに並ぶ）</li>
+                    <li><strong>Dequeue() を実行！</strong>： 一番先頭（Head）の <strong>10</strong> が呼ばれて出ていく。<br>
+                    結果： <code>[ , 20, 30, ]</code> （先頭[Head]が一つ後ろにズレる）</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="code-section">
+            <h2>本番形式：配列を使ったキューの実装（リングバッファ）</h2>
+            <p>キューもスタックと同様に配列とポインタを使って実装します。要素が右端に到達したら左端（1番目）に戻る<strong>「リングバッファ」</strong>の仕組みを取り入れた頻出コードです。</p>
+
+            <div class="code-wrapper">
+<pre><code><span class="code-comment">// グローバル変数の準備</span>
+〇整数型の配列: queue    <span class="code-comment">// データを保存する配列</span>
+〇整数型: head           <span class="code-comment">// 先頭を指すポインタ（出す場所）</span>
+〇整数型: tail           <span class="code-comment">// 末尾を指すポインタ（次に入れる場所）</span>
+〇整数型: max_len        <span class="code-comment">// 配列の長さ（定員）</span>
+
+<span class="code-comment">// 初期化（1番目スタート）</span>
+<span class="var">head</span> <span class="op">←</span> <span class="num">1</span>
+<span class="var">tail</span> <span class="op">←</span> <span class="num">1</span>
+<span class="var">max_len</span> <span class="op">←</span> <span class="var">queue</span>の要素数
+
+<span class="code-comment">// データを【入れる】関数（エンキュー）</span>
+<span class="kw">関数</span> <span class="func">enqueue</span>(<span class="kw">整数型</span>: <span class="var">val</span>)
+    <span class="code-comment">// 現在のtail（末尾）の場所にデータを置く</span>
+    <span class="var">queue</span>[<span class="var">tail</span>] <span class="op">←</span> <span class="var">val</span>
+    <span class="code-comment">// tailを1つ進める。右端に着いたら「1」に戻る！</span>
+    <span class="var">tail</span> <span class="op">←</span> (<span class="var">tail</span> <span class="op">%</span> <span class="var">max_len</span>) <span class="op">+</span> <span class="num">1</span>
+<span class="kw">関数おわり</span>
+
+<span class="code-comment">// データを【出す】関数（デキュー）</span>
+<span class="kw">関数</span> <span class="func">dequeue</span>() <span class="kw">戻り値: 整数型</span>
+    <span class="com">〇整数型: ret</span>
+    <span class="code-comment">// 現在のhead（先頭）のデータを取り出す</span>
+    <span class="var">ret</span> <span class="op">←</span> <span class="var">queue</span>[<span class="var">head</span>]
+    <span class="code-comment">// headを1つ進める。右端に着いたら1に戻る</span>
+    <span class="var">head</span> <span class="op">←</span> (<span class="var">head</span> <span class="op">%</span> <span class="var">max_len</span>) <span class="op">+</span> <span class="num">1</span>
+    <span class="kw">return</span> <span class="var">ret</span>
+<span class="kw">関数おわり</span></code></pre>
+            </div>
+        </section>
+
+        <section class="exam-tips">
+            <h2>本番の試験で「穴埋め」にされるポイント</h2>
+            <p>試験では、キューのポインタ（head, tail）を<strong>「いつ増やすか？いつ減らすか？どう移動するか？」</strong>が必ず問われます。</p>
+
+            <div class="callout">
+                <h3>🔥 狙われるポイント：キューのポインタ移動（リングバッファ）</h3>
+                <dl>
+                    <dt>空欄の例</dt>
+                    <dd><code>tail ← [ a ]</code></dd>
+
+                    <dt>正解</dt>
+                    <dd><span class="dd-answer">(tail % max_len) + 1</span></dd>
+
+                    <dt>なぜ？</dt>
+                    <dd>配列の右端（限界）に到達したとき、エラーにならずに左端（1番目）へぐるっと戻るための魔法の式です。割り算の余り（% または mod）を使うことで、<code>tail</code> や <code>head</code> は常に 1 から配列の長さまでの範囲をループし続けます。科目Bで頻出のテクニックです。</dd>
+                </dl>
+            </div>
+        </section>
+
+        <footer>
+            <div class="conclusion-box">
+                <p style="margin-bottom: 0;">【暗記ポイント】<br>キュー ＝ FIFO（先入れ先出し）＝ プリンタの印刷待ちや、レジの順番待ち。</p>
+            </div>
+        </footer>
+
+    </article>
+
+</body>
+</html>

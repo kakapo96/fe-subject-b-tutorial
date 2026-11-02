@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【完全版】ビットシフト演算と論理演算の攻略</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #e6f2ff;
+            --accent-color: #e63946;
+            --text-color: #333333;
+            --light-gray: #f4f4f9;
+            --border-color: #cccccc;
+            --bg-color: #eaebf0;
+            --paper-color: #ffffff;
+            --and-color: #2a9d8f; /* AND用グリーン */
+            --or-color: #f4a261;  /* OR用オレンジ */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.8;
+            font-size: 16px;
+            padding: 40px 20px;
+        }
+
+        .document-wrapper {
+            max-width: 840px;
+            margin: 0 auto;
+            background-color: var(--paper-color);
+            padding: 60px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: var(--primary-color);
+            background-color: var(--secondary-color);
+            padding: 10px 15px;
+            border-left: 6px solid var(--primary-color);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        h3 {
+            font-size: 18px;
+            color: #444;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        p { margin-bottom: 16px; }
+
+        strong {
+            color: #1a1a1a;
+            font-weight: bold;
+            background: linear-gradient(transparent 70%, #ffd166 70%);
+        }
+
+        ul { margin-bottom: 20px; padding-left: 24px; }
+        li { margin-bottom: 8px; }
+
+        /* =====================================
+           ビットの箱（メモリ）の表現
+           ===================================== */
+        .bit-visualization {
+            background-color: var(--light-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .bit-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 4px;
+        }
+
+        .bit-label {
+            font-weight: bold;
+            margin-right: 15px;
+            width: 120px;
+            text-align: right;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .bit-box {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #555;
+            border-radius: 4px;
+            font-size: 18px;
+            font-family: monospace;
+            font-weight: bold;
+            background-color: #fff;
+        }
+
+        .bit-box.highlight-shift { border-color: var(--accent-color); color: var(--accent-color); background-color: #fff0f0; }
+        .bit-box.highlight-and { border-color: var(--and-color); color: var(--and-color); background-color: #eafffa; }
+        .bit-box.highlight-or { border-color: var(--or-color); color: var(--or-color); background-color: #fff6e6; }
+        .bit-box.empty { border-style: dashed; color: #ccc; background-color: transparent; }
+
+        .arrow-down { color: var(--primary-color); font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .operator-symbol { font-size: 24px; font-weight: bold; color: #555; margin: 5px 0; }
+
+        /* =====================================
+           結果ブロック・コラム
+           ===================================== */
+        .result-block {
+            background-color: #f8fff8;
+            border-left: 4px solid #2a9d8f;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .result-block span { display: inline-block; margin-right: 20px; font-weight: bold; }
+
+        .callout {
+            background-color: #fff9e6;
+            border: 1px solid #ffe082;
+            border-left: 6px solid #ffca28;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0 30px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .callout-title { font-weight: bold; color: #b8860b; margin-bottom: 10px; font-size: 18px; }
+
+        /* =====================================
+           ダークコードブロック（暗記・解説用）
+           ===================================== */
+        .dark-code {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin: 20px 0;
+            border-left: 6px solid #c678dd;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .dark-code .var { color: #e06c75; font-weight: bold; } 
+        .dark-code .op { color: #56b6c2; font-weight: bold; }  
+        .dark-code .kw { color: #c678dd; font-weight: bold; }  
+        .dark-code .num { color: #d19a66; font-weight: bold; } 
+        .dark-code .comment { color: #7f848e; font-style: italic; font-size: 0.9em; }
+
+        /* テーブル */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        th, td { border: 1px solid var(--border-color); padding: 12px 15px; text-align: left; vertical-align: middle; }
+        th { background-color: var(--primary-color); color: white; font-weight: normal; }
+        tr:nth-child(even) { background-color: var(--light-gray); }
+        .symbol-cell { font-weight: bold; font-size: 1.3em; text-align: center; color: var(--primary-color); font-family: Consolas, monospace; }
+
+        /* =====================================
+           解説ステップ用のスタイル
+           ===================================== */
+        .step-card {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        .step-title { color: var(--primary-color); font-weight: bold; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+
+    </style>
+</head>
+<body>
+
+<div class="document-wrapper">
+    <article>
+        <h1>2進数のビット操作・完全攻略</h1>
+        <p>シフト演算（ズラす）と論理演算（切り取る・くっつける）の動きを視覚的に理解し、頻出の「ビット反転問題」を解くための完全版ペーパーです。</p>
+
+        <section>
+            <h2>1. シフト演算（場所をズラす）</h2>
+            
+            <h3>① 左シフト（&lt;&lt;） ： 「席を空ける」</h3>
+            <p>みんなで一斉に左へ移動し、右側に新しいスペース（0）を作ります。（値は2倍になります）</p>
+
+            <div class="bit-visualization">
+                <div class="bit-row">
+                    <div class="bit-label">元のデータ</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">1</div><div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box">0</div>
+                </div>
+                <div class="arrow-down">↓ 左へ1ビットずらす（&lt;&lt; 1） ↓</div>
+                <div class="bit-row">
+                    <div class="bit-label">移動後</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box">0</div>
+                    <div class="bit-box">1</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box highlight-shift">0</div>
+                </div>
+            </div>
+
+            <h3>② 右シフト（&gt;&gt;） ： 「次の方どうぞ」</h3>
+            <p>みんなで一斉に右へ移動し、一番右のデータを押し出します。（値は1/2になります）</p>
+
+            <div class="bit-visualization">
+                <div class="bit-row">
+                    <div class="bit-label">元のデータ</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">1</div><div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box">1</div>
+                </div>
+                <div class="arrow-down">↓ 右へ1ビットずらす（&gt;&gt; 1） ↓</div>
+                <div class="bit-row">
+                    <div class="bit-label">移動後</div>
+                    <div class="bit-box highlight-shift">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box">0</div><div class="bit-box">1</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. 論理演算（データを加工する）</h2>
+
+            <h3>① AND（ ∧ ） ： 「ハサミ（切り取り）」</h3>
+            <p>「1」がある場所だけを切り抜いて残し、それ以外は「0」で潰します。<strong>特定のビットを取り出したい時</strong>に使います。</p>
+            
+            <div class="bit-visualization" style="border-left: 4px solid var(--and-color);">
+                <div class="bit-row">
+                    <div class="bit-label">元データ</div>
+                    <div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">1</div><div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box highlight-and">1</div>
+                </div>
+                <div class="operator-symbol">∧ (AND)</div>
+                <div class="bit-row">
+                    <div class="bit-label">マスク(型枠)</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box highlight-and">1</div>
+                </div>
+                <div class="operator-symbol">||</div>
+                <div class="bit-row">
+                    <div class="bit-label">結果</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box highlight-and">1</div>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">※上記は「データ ∧ 1」。一番右端（しっぽ）の1個だけを切り抜いています。</p>
+            </div>
+
+            <h3>② OR（ ∨ ） ： 「接着剤（合体）」</h3>
+            <p>2つのデータを重ね合わせて合体させます。<strong>空いているスペース（0の部分）に別のデータを埋め込みたい時</strong>に使います。</p>
+
+            <div class="bit-visualization" style="border-left: 4px solid var(--or-color);">
+                <div class="bit-row">
+                    <div class="bit-label">データA</div>
+                    <div class="bit-box highlight-or">1</div><div class="bit-box">0</div><div class="bit-box highlight-or">1</div><div class="bit-box">0</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                </div>
+                <div class="operator-symbol">∨ (OR)</div>
+                <div class="bit-row">
+                    <div class="bit-label">データB</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">0</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box">1</div><div class="bit-box highlight-or">1</div>
+                </div>
+                <div class="operator-symbol">||</div>
+                <div class="bit-row">
+                    <div class="bit-label">合体結果</div>
+                    <div class="bit-box highlight-or">1</div><div class="bit-box">0</div><div class="bit-box highlight-or">1</div><div class="bit-box">0</div>
+                    <div class="bit-box">0</div><div class="bit-box">0</div><div class="bit-box highlight-or">1</div><div class="bit-box highlight-or">1</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. 問6「ビット反転プログラム」の完全理解</h2>
+            <p>関数 <code>rev</code> は、8ビットのデータ（例: <code>01001011</code>）を逆順（<code>11010010</code>）にするプログラムです。<br>
+            ここまでに学んだ「シフト」と「ハサミ＆接着剤」のコンボで、この魔法がどうやって起きているのか解剖しましょう。</p>
+
+            <div class="dark-code">
+                <span class="comment">// 正解のプログラム（ア）</span><br>
+                <span class="kw">for</span> (<span class="var">i</span> を 1 から 8 まで 1 ずつ増やす)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="var">r</span> ← (<span class="var">r</span> <span class="op">&lt;&lt;</span> <span class="num">1</span>) <span class="kw">∨</span> (<span class="var">rbyte</span> <span class="kw">∧</span> <span class="num">00000001</span>)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="var">rbyte</span> ← <span class="var">rbyte</span> <span class="op">&gt;&gt;</span> <span class="num">1</span><br>
+                <span class="kw">endfor</span>
+            </div>
+
+            <aside class="callout" style="border-color: #ffca28; margin-top: -10px;">
+                <div class="callout-title">★ 解法の結論（1秒で見抜く暗記ポイント）</div>
+                <p style="margin-bottom: 0;"><strong>「結果（r）は左へ（&lt;&lt;）育てて、元データ（rbyte）は右へ（&gt;&gt;）削る！」</strong><br>
+                矢印の向きが逆（&lt;&lt; と &gt;&gt;）になっている選択肢を探せば一発で解けます。</p>
+            </aside>
+
+            <h3>動きのシミュレーション（なぜこれで逆順になるのか？）</h3>
+            <p>初期状態： <br>
+            元データ <code>rbyte = [ a b c d e f g h ]</code><br>
+            結果の箱 <code>r     = [ 0 0 0 0 0 0 0 0 ]</code></p>
+
+            <div class="step-card">
+                <div class="step-title">ループ 1回目</div>
+                <p><strong>① <code>(rbyte ∧ 00000001)</code></strong><br>
+                ハサミ（AND）を使って、元データの一番右端「<span style="color:var(--accent-color); font-weight:bold;">h</span>」だけを切り取ります。<br>
+                <span style="font-family:monospace;">→ [ 0 0 0 0 0 0 0 <span style="color:var(--accent-color); font-weight:bold;">h</span> ]</span></p>
+
+                <p><strong>② <code>(r &lt;&lt; 1)</code></strong><br>
+                結果の箱（r）を左に1つズラして、右端に空席を作ります。<br>
+                <span style="font-family:monospace;">→ [ 0 0 0 0 0 0 0 <span style="color:#aaa;">_</span> ]</span></p>
+
+                <p><strong>③ <code>① ∨ ②</code></strong><br>
+                空けた席に、切り取った「<span style="color:var(--accent-color); font-weight:bold;">h</span>」を接着剤（OR）で合体させます！<br>
+                <span style="font-family:monospace;">→ r = [ 0 0 0 0 0 0 0 <span style="color:var(--accent-color); font-weight:bold;">h</span> ]</span></p>
+
+                <p><strong>④ <code>rbyte &gt;&gt; 1</code></strong><br>
+                元データを右に1つズラして、次に処理する「g」を一番右端に持ってきます。<br>
+                <span style="font-family:monospace;">→ rbyte = [ 0 a b c d e f <span style="color:var(--primary-color); font-weight:bold;">g</span> ]</span></p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-title">ループ 2回目</div>
+                <p>同じことを繰り返します。<br>
+                ① 今度は右端に来た「<span style="color:var(--primary-color); font-weight:bold;">g</span>」をハサミで切り取ります。<br>
+                ② <code>r</code>を左にズラして席を空けます。さっき入れた「<span style="color:var(--accent-color); font-weight:bold;">h</span>」は左に押し出されます。<br>
+                &nbsp;&nbsp;&nbsp;<span style="font-family:monospace;">r = [ 0 0 0 0 0 0 <span style="color:var(--accent-color); font-weight:bold;">h</span> <span style="color:#aaa;">_</span> ]</span><br>
+                ③ 空いた席に「<span style="color:var(--primary-color); font-weight:bold;">g</span>」を合体させます。<br>
+                &nbsp;&nbsp;&nbsp;<span style="font-family:monospace;">r = [ 0 0 0 0 0 0 <span style="color:var(--accent-color); font-weight:bold;">h</span> <span style="color:var(--primary-color); font-weight:bold;">g</span> ]</span><br>
+                ④ 元データを右にズラして、次は「f」の番です。</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-title">8回繰り返すと…？</div>
+                <p>右から順番に切り取られたデータが、新しい箱の右から入って左へ押し出されていくので、最終的に<strong>「完全に逆順」</strong>のデータが完成します！<br>
+                <span style="font-family:monospace; font-size:1.2em; font-weight:bold;">r = [ h g f e d c b a ]</span></p>
+            </div>
+
+            <p style="margin-top: 30px; text-align: center; font-weight: bold; color: var(--primary-color);">
+                【要点まとめ】<br>
+                AND(∧)で右端を取り出し、OR(∨)でくっつけ、シフト(&lt;&lt;, &gt;&gt;)でベルトコンベアのように流す。<br>これがビット操作の黄金パターンです！
+            </p>
+        </section>
+
+    </article>
+</div>
+
+</body>
+</html>

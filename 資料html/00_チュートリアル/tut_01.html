@@ -1,0 +1,46 @@
+<style>
+    .tut-container { max-width: 840px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); line-height: 1.8; color: #333; }
+    .tut-container h1 { color: #004494; border-bottom: 3px solid #cce0ff; padding-bottom: 10px; margin-bottom: 20px; font-size: 1.8rem; }
+    .tut-container h2 { color: #0056b3; margin-top: 30px; border-left: 5px solid #0056b3; padding-left: 10px; font-size: 1.4rem; background: #f4f7f6; padding: 10px; }
+    .tut-rule-box { background-color: #fff3cd; border: 2px solid #ffeeba; border-radius: 8px; padding: 20px; margin: 20px 0; }
+    .tut-rule-box h3 { margin-top: 0; color: #856404; display: flex; align-items: center; gap: 8px; }
+    .code-block { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 1.1rem; }
+    .highlight { color: #569cd6; font-weight: bold; }
+    .important-text { font-weight: bold; background: linear-gradient(transparent 70%, #ffc107 70%); }
+</style>
+
+<div class="tut-container">
+    <h1>ようこそ！科目B アルゴリズム特訓へ</h1>
+    <p>基本情報技術者試験の最大の壁、それが<strong>「科目B（アルゴリズムとプログラミング）」</strong>です。<br>
+    このアプリでは、暗記では絶対に解けないアルゴリズム問題を、確実に解けるようにするための特訓を行います。</p>
+
+    <h2>これだけは絶対！FE擬似言語の2大ルール</h2>
+    <p>科目Bでは、特定の言語（JavaやPythonなど）ではなく、試験専用の「擬似言語（ぎじげんご）」という書き方が出題されます。まずは絶対に間違えてはいけない2つのルールを覚えましょう。</p>
+
+    <div class="tut-rule-box">
+        <h3>ルール①： 代入は「＝」ではなく「←」を使う</h3>
+        <p>数学のクセで <code>x = 10</code> と書きたくなりますが、擬似言語では矢印を使います。</p>
+        <div class="code-block">
+            整数型: x <span class="highlight">←</span> 10  // 右の「10」を、左の「x」という箱に入れる
+        </div>
+        <p style="margin-top: 10px; font-size: 0.9em;">※ <code>==</code> は「等しいかどうか」を比べる時に使います。</p>
+    </div>
+
+    <div class="tut-rule-box">
+        <h3>ルール②： 配列の番号（インデックス）は「1」から始まる</h3>
+        <p>プログラミング経験者ほど引っかかる最大の罠です。通常の言語は「0」番目から始まりますが、試験の擬似言語は<span class="important-text">「1番目」からスタート</span>します。</p>
+        <div class="code-block">
+            整数型の配列: data ← {10, 20, 30}<br>
+            // data[1] は 10<br>
+            // data[3] は 30
+        </div>
+    </div>
+
+    <h2>アルゴリズム攻略の極意：「トレース」とは？</h2>
+    <p>プログラムの動きを、1行ずつ人間の手で追いかけていくことを<strong>「トレース」</strong>と呼びます。<br>
+    頭の中だけで考えようとすると100%間違えます。必ず<strong>手元の白紙に箱を書いて、数字を消しゴムで書き換えながら</strong>追いかけてください。</p>
+    
+    <p style="text-align: center; font-size: 1.2rem; font-weight: bold; color: #d32f2f; margin-top: 30px;">
+        次のステップから、実際にコードを見ながら<br>「一緒に1行ずつトレースしていく」練習を始めましょう！
+    </p>
+</div>

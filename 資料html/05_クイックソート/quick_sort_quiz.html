@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アルゴリズム理解度チェック：2分探索</title>
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-main: #333333;
+            --border-color: #e2e8f0;
+            --code-bg: #1e293b;
+        }
+        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--surface-color); padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .page { display: none; }
+        .page.active { display: block; }
+        h1, h2 { color: var(--primary-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .question-box { background-color: #f0fdfa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .options-box { margin-bottom: 20px; }
+        .options-box label { display: block; background: #f1f5f9; padding: 10px; margin-bottom: 8px; border-radius: 4px; cursor: pointer; border: 1px solid #cbd5e1; }
+        .options-box label:hover { background: #e2e8f0; }
+        
+        /* コードブロックのスタイル厳守 */
+        pre.pseudo-code { background-color: var(--code-bg); color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 1em; line-height: 1.5; }
+        .explanation-box { background-color: #fffbeb; border-left: 5px solid #d97706; padding: 20px; margin-bottom: 20px; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button.btn-back { background-color: #64748b; }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="p1" class="page active">
+        <h2>第1問（基礎トレース）</h2>
+        <div class="question-box">
+            <p>要素が昇順に格納された配列 <code>data = {10, 30, 50, 70, 90}</code> （要素番号は1〜5）に対して、以下の2分探索プログラムを実行し、<code>target = 70</code> を探します。</p>
+            <p>1回目の <code>while</code> ループ処理内で、変数 <code>middle</code> が計算され、条件分岐（<code>if</code> 〜 <code>endif</code>）の処理を終えた直後の、変数 <code>low</code> と <code>high</code> の値の組み合わせとして正しいものはどれか。</p>
+<pre class="pseudo-code"><code>〇整数型の配列: data ← {10, 30, 50, 70, 90}
+〇整数型: target ← 70
+〇整数型: low, high, middle
+〇整数型: ans
+
+low ← 1
+high ← 5
+ans ← -1
+
+while (low <= high)
+    middle ← (low + high) ÷ 2 の商
+    if (data[middle] == target)
+        ans ← middle
+        break
+    elseif (data[middle] < target)
+        low ← middle + 1
+    else
+        high ← middle - 1
+    endif
+endwhile</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q1"> ア: low = 1, high = 2</label>
+            <label><input type="radio" name="q1"> イ: low = 1, high = 3</label>
+            <label><input type="radio" name="q1"> ウ: low = 3, high = 5</label>
+            <label><input type="radio" name="q1"> エ: low = 4, high = 5</label>
+            <label><input type="radio" name="q1"> オ: low = 4, high = 4</label>
+            <label><input type="radio" name="q1"> カ: low = 5, high = 5</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p2')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p2" class="page">
+        <h2>第1問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： エ (low = 4, high = 5)</h3>
+            <p>1回目のループでの変数の変化をトレースします。</p>
+            <ul>
+                <li><strong>初期状態:</strong> <code>low = 1</code>, <code>high = 5</code></li>
+                <li><strong>1回目のループ開始:</strong>
+                    <ul>
+                        <li><code>middle ← (1 + 5) ÷ 2 の商</code> なので、<code>middle = 3</code> となります。</li>
+                        <li><code>data[3]</code> は <code>50</code> です。</li>
+                        <li><code>target</code> は <code>70</code> なので、<code>data[middle] == target</code> (50 == 70) は偽です。</li>
+                        <li>次に <code>elseif (data[middle] < target)</code> を評価します。(50 &lt; 70) は真です。</li>
+                        <li>したがって、<code>low ← middle + 1</code> が実行され、<code>low ← 3 + 1 = 4</code> となります。</li>
+                        <li><code>high</code> の値は変更されず <code>5</code> のままです。</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>よって、1回目のループの分岐処理が終わった直後の値は <code>low = 4</code>, <code>high = 5</code> となります。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p1')">前のページに戻る</button>
+            <button onclick="switchPage('p3')">次の問題へ</button>
+        </div>
+    </div>
+
+    <div id="p3" class="page">
+        <h2>第2問（発展トレース）</h2>
+        <div class="question-box">
+            <p>昇順に格納された配列 <code>data = {12, 25, 36, 48, 55, 62, 79, 81, 95}</code> （要素番号1〜9）から <code>target = 25</code> を、第1問と同じ2分探索プログラムを用いて探索します。</p>
+            <p>探索が完了して変数 <code>ans</code> に発見した要素番号が代入されるのは、<code>while</code> ループの処理を<strong>何回目</strong>に実行したときでしょうか。</p>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q2"> ア: 1回目</label>
+            <label><input type="radio" name="q2"> イ: 2回目</label>
+            <label><input type="radio" name="q2"> ウ: 3回目</label>
+            <label><input type="radio" name="q2"> エ: 4回目</label>
+            <label><input type="radio" name="q2"> オ: 5回目</label>
+            <label><input type="radio" name="q2"> カ: 見つからずにループを終了する</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p4')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <h2>第2問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： イ (2回目)</h3>
+            <p>ループごとの変数の変化をトレースします。</p>
+            <ul>
+                <li><strong>初期状態:</strong> <code>low = 1</code>, <code>high = 9</code></li>
+                <li><strong>1回目のループ:</strong>
+                    <ul>
+                        <li><code>middle ← (1 + 9) ÷ 2 の商 = 5</code></li>
+                        <li><code>data[5]</code> は <code>55</code> です。</li>
+                        <li><code>target (25)</code> は <code>55</code> より小さいので、<code>data[middle] &lt; target</code> は偽です。</li>
+                        <li><code>else</code> ブロックに進み、<code>high ← middle - 1 = 4</code> に更新されます。(左半分に絞り込み)</li>
+                    </ul>
+                </li>
+                <li><strong>2回目のループ:</strong>
+                    <ul>
+                        <li>現在の範囲は <code>low = 1</code>, <code>high = 4</code> です。</li>
+                        <li><code>middle ← (1 + 4) ÷ 2 の商 = 2</code></li>
+                        <li><code>data[2]</code> は <code>25</code> です。</li>
+                        <li><code>target (25)</code> と完全に一致するため、<code>if (data[middle] == target)</code> が真になります。</li>
+                        <li><code>ans ← 2</code> が実行され、<code>break</code> でループを抜けます。</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>以上より、2回目のループで目的の数値が見つかり、処理が終了します。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p3')">前のページに戻る</button>
+            <button onclick="switchPage('p5')">次の問題へ</button>
+        </div>
+    </div>
+
+    <div id="p5" class="page">
+        <h2>第3問（本番レベル・穴埋め）</h2>
+        <div class="question-box">
+            <p>通常、2分探索はデータが昇順（小さい順）に並んでいることを前提としますが、もし配列 <code>data</code> の要素が<strong>降順（大きい順）</strong>に並んでいた場合、プログラムの条件式を変更する必要があります。</p>
+            <p>以下の降順データ用2分探索プログラムの空欄 <code>[  a  ]</code> に入る適切な条件式を選んでください。</p>
+<pre class="pseudo-code"><code>〇整数型の配列: data // 要素は降順(大きい順)に並んでいる
+〇整数型: target
+〇整数型: low, high, middle
+〇整数型: ans
+
+low ← 1
+high ← dataの要素数
+ans ← -1
+
+while (low <= high)
+    middle ← (low + high) ÷ 2 の商
+    if (data[middle] == target)
+        ans ← middle
+        break
+    elseif ( [  a  ] )
+        // targetの方が大きい場合、左半分に答えがある
+        high ← middle - 1
+    else
+        // targetの方が小さい場合、右半分に答えがある
+        low ← middle + 1
+    endif
+endwhile</code></pre>
+        </div>
+        <div class="options-box">
+            <label><input type="radio" name="q3"> ア: data[middle] &lt; target</label>
+            <label><input type="radio" name="q3"> イ: data[middle] &gt; target</label>
+            <label><input type="radio" name="q3"> ウ: data[middle] &lt;= target</label>
+            <label><input type="radio" name="q3"> エ: data[middle] &gt;= target</label>
+            <label><input type="radio" name="q3"> オ: low &lt; high</label>
+            <label><input type="radio" name="q3"> カ: target &lt; middle</label>
+        </div>
+        <div class="btn-group">
+            <button onclick="switchPage('p6')">解説を見る</button>
+        </div>
+    </div>
+
+    <div id="p6" class="page">
+        <h2>第3問 解答と解説</h2>
+        <div class="explanation-box">
+            <h3>正解： ア (data[middle] &lt; target)</h3>
+            <p>データが降順（大きい順）に並んでいる場合、配列の左側（要素番号が小さい方）に大きい値が、右側に小さい値が格納されています。</p>
+            <ul>
+                <li>例： <code>{90, 70, 50, 30, 10}</code></li>
+            </ul>
+            <p>コメントにある通り、<code>elseif</code> のブロックは<strong>「targetの方が大きい場合」</strong>の処理です。<br>
+            探している <code>target</code> が、真ん中の値 <code>data[middle]</code> よりも大きいということは、条件式としては <code>target &gt; data[middle]</code>、つまり <code>data[middle] &lt; target</code> となります。</p>
+            <p>降順の配列で、真ん中の値より探している値が大きい場合、その値は真ん中より<strong>左側</strong>に存在します。そのため、探索範囲の右端を示す <code>high</code> を <code>middle - 1</code> に移動して左半分に絞り込みます。</p>
+            <p>逆に <code>target</code> の方が小さい場合は、値は右側に存在するため、<code>else</code> 節で <code>low ← middle + 1</code> となります。</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="switchPage('p5')">前のページに戻る</button>
+            <button onclick="alert('お疲れ様でした！全問終了です。')">終了</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchPage(targetId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        document.getElementById(targetId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
+</body>
+</html>

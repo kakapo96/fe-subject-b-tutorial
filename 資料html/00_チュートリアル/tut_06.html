@@ -1,0 +1,293 @@
+<style>
+    .tut-step-container {
+        max-width: 840px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 35px;
+        border-radius: 12px;
+        color: #333333;
+        line-height: 1.8;
+    }
+    .tut-step-container h1 {
+        font-size: 1.6rem;
+        color: #004494;
+        border-bottom: 3px solid #cce0ff;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+    .tut-step-container p {
+        margin-bottom: 1.5em;
+    }
+    
+    /* コードエリア */
+    .code-section-box {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: 'Consolas', monospace;
+        font-size: 1.05rem;
+        margin-bottom: 30px;
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .code-line-item {
+        margin: 4px 0;
+        padding: 2px 8px;
+        border-radius: 4px;
+        display: flex;
+    }
+    .line-num {
+        color: #858585;
+        width: 30px;
+        display: inline-block;
+        user-select: none;
+    }
+    .kw { color: #c678dd; font-weight: bold; }
+    .kw-type { color: #569cd6; font-weight: bold; }
+    .str { color: #ce9178; }
+    .com { color: #6a9955; font-style: italic; }
+    
+    /* トレース解説カード */
+    .trace-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        margin-top: 30px;
+    }
+    .trace-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #0056b3;
+        border-radius: 6px;
+        padding: 20px;
+    }
+    .trace-card h3 {
+        margin-top: 0;
+        color: #004494;
+        font-size: 1.2rem;
+        border-bottom: 1px dashed #cbd5e1;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    
+    /* シミュレーションエリア */
+    .memo-simulation {
+        background: #fffdeb;
+        border: 2px dashed #ece6b0;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 15px;
+        font-family: 'Consolas', monospace;
+    }
+    .memo-title {
+        font-size: 0.9rem;
+        color: #856404;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    /* 配列の視覚表現 */
+    .array-visual {
+        display: flex;
+        gap: 8px;
+        margin: 10px 0;
+    }
+    .array-block {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        border-radius: 4px;
+        width: 75px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .array-idx {
+        background: #e2e8f0;
+        font-size: 0.8rem;
+        padding: 2px 0;
+        font-weight: bold;
+        color: #475569;
+    }
+    .array-val {
+        padding: 6px 0;
+        font-weight: bold;
+        font-size: 1.05rem;
+    }
+    .array-val.target-idx {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+    
+    .eval-box {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        font-family: 'Consolas', monospace;
+        font-size: 0.95rem;
+    }
+    .eval-condition {
+        font-weight: bold;
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+    .eval-true { background: #d1fae5; color: #065f46; }
+    .eval-false { background: #fee2e2; color: #991b1b; }
+
+    /* 罠の警告 */
+    .trap-alert-box {
+        background: #fff3e0;
+        border-left: 5px solid #ff9800;
+        padding: 20px;
+        border-radius: 0 8px 8px 0;
+        margin-top: 35px;
+    }
+    .trap-alert-box h4 {
+        margin-top: 0;
+        color: #e65100;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    .important-text {
+        font-weight: bold;
+        background: linear-gradient(transparent 70%, #ffc107 70%);
+    }
+</style>
+
+<div class="tut-step-container">
+    <h1>06 トレース実践⑤ 穴埋め形式と配列の境界値と「1始まり」の罠</h1>
+    <p>一緒にトレースを学ぶ最後の実践ステップです！ここでは、科目Bでプログラミング経験者ほど100%引っかかる最大の罠、<strong>「配列のインデックスが1から始まる仕様（1オリジン）」</strong>と、ループの終了条件の境界値を完璧に攻略します。<br>
+    元の配列 <code>arr</code> の中身を逆順（後ろから順番）にして、新しい配列 <code>res</code> へ綺麗に移し替えるコードを動かしながら、終了条件 <code>[ a ]</code> の正体を見極めましょう！</p>
+
+    <!-- コード全体像 -->
+    <div class="code-section-box">
+        <div class="code-line-item"><span class="line-num">1</span><span><span class="kw-type">整数型の配列</span>: arr ← {5, 10, 15, 20}</span></div>
+        <div class="code-line-item"><span class="line-num">2</span><span><span class="kw-type">整数型の配列</span>: res ← {}</span></div>
+        <div class="code-line-item"><span class="line-num">3</span><span><span class="kw-type">整数型</span>: i ← 1</span></div>
+        <div class="code-line-item"><span class="line-num">4</span><span></span></div>
+        <div class="code-line-item"><span class="line-num">5</span><span><span class="kw">while</span> ( <span class="important-text">[&nbsp;&nbsp;a&nbsp;&nbsp;]</span> )</span></div>
+        <div class="code-line-item"><span class="line-num">6</span><span>&nbsp;&nbsp;&nbsp;&nbsp;res の末尾に arr[arr の要素数 - i + 1] の値を追加する</span></div>
+        <div class="code-line-item"><span class="line-num">7</span><span>&nbsp;&nbsp;&nbsp;&nbsp;i ← i + 1</span></div>
+        <div class="code-line-item"><span class="line-num">8</span><span><span class="kw">endwhile</span></span></div>
+        <div class="code-line-item"><span class="line-num">9</span><span>選択肢</span></div>
+        <div class="code-line-item"><span class="line-num">10</span><span>ア. i が arr の要素数 より小さい</span></div>
+        <div class="code-line-item"><span class="line-num">11</span><span>イ. i が arr の要素数 以下</span></div>
+        <div class="code-line-item"><span class="line-num">12</span><span>ウ. i が arr の要素数 と等しい</span></div>
+        <div class="code-line-item"><span class="line-num">13</span><span>エ. i が arr の要素数 より大きい</span></div>
+        
+
+
+
+    </div>
+
+    <p>期待する結果：最終的に <code>res</code> の中身を <strong>{20, 15, 10, 5}</strong> にすること。<br>
+    ※<code>arr の要素数</code> は <strong>4</strong> です。そのため、6行目の添字の計算式は <code>4 - i + 1</code> すなわち <strong><code>5 - i</code></strong> になります。</p>
+
+    <h2>1要素ずつ移し替える実況トレース</h2>
+    
+    <div class="trace-flow">
+        
+        <!-- ループ1回目 -->
+        <div class="trace-card">
+            <h3>【ループ1回目】 i = 1 のとき （resの1つ目の要素をセット）</h3>
+            <p>初期値 <code>i = 1</code> からスタートです。<br>
+            6行目の計算式： <code>arr[5 - 1] = arr[4]</code> の値を読み取ります。配列の4番目は <strong>20</strong> です！<br>
+            この20を <code>res</code> に追加します。その後、7行目で <code>i</code> は 2 に増えます。</p>
+            
+            <div class="memo-simulation">
+                <div class="memo-title">🔍 配列 arr の状態（1番目からスタート！）：</div>
+                <div class="array-visual">
+                    <div class="array-block"><div class="array-idx">[1]</div><div class="array-val">5</div></div>
+                    <div class="array-block"><div class="array-idx">[2]</div><div class="array-val">10</div></div>
+                    <div class="array-block"><div class="array-idx">[3]</div><div class="array-val">15</div></div>
+                    <div class="array-block"><div class="array-idx">[4]</div><div class="array-val target-idx">20</div></div>
+                </div>
+                <p>📋 res の中身: <code>{20}</code></p>
+            </div>
+        </div>
+
+        <!-- ループ2回目 -->
+        <div class="trace-card" style="border-left-color: #7c3aed;">
+            <h3>【ループ2回目】 i = 2 のとき （resの2つ目の要素をセット）</h3>
+            <p>2周目です。<code>i = 2</code> の状態で侵入します。<br>
+            6行目の計算式： <code>arr[5 - 2] = arr[3]</code> の値を読み取ります。配列の3番目は <strong>15</strong> です。<br>
+            15を <code>res</code> の末尾に追加し、<code>i</code> は 3 に増えます。</p>
+            
+            <div class="memo-simulation">
+                <div class="array-visual">
+                    <div class="array-block"><div class="array-idx">[1]</div><div class="array-val">5</div></div>
+                    <div class="array-block"><div class="array-idx">[2]</div><div class="array-val">10</div></div>
+                    <div class="array-block"><div class="array-idx">[3]</div><div class="array-val target-idx">15</div></div>
+                    <div class="array-block"><div class="array-idx">[4]</div><div class="array-val">20</div></div>
+                </div>
+                <p>📋 res の中身: <code>{20, 15}</code></p>
+            </div>
+        </div>
+
+        <!-- ループ3回目 -->
+        <div class="trace-card" style="border-left-color: #db2777;">
+            <h3>【ループ3回目】 i = 3 のとき （resの3つ目の要素をセット）</h3>
+            <p>3周目です。<code>i = 3</code> です。<br>
+            6行目の計算式： <code>arr[5 - 3] = arr[2]</code> の値を読み取ります。配列の2番目は <strong>10</strong> です。<br>
+            10を <code>res</code> の末尾に追加し、<code>i</code> は 4 に増えます。</p>
+            
+            <div class="memo-simulation">
+                <div class="array-visual">
+                    <div class="array-block"><div class="array-idx">[1]</div><div class="array-val">5</div></div>
+                    <div class="array-block"><div class="array-idx">[2]</div><div class="array-val target-idx">10</div></div>
+                    <div class="array-block"><div class="array-idx">[3]</div><div class="array-val">15</div></div>
+                    <div class="array-block"><div class="array-idx">[4]</div><div class="array-val">20</div></div>
+                </div>
+                <p>📋 res の中身: <code>{20, 15, 10}</code></p>
+            </div>
+        </div>
+
+        <!-- ループ4回目（ここが超・最重要！） -->
+        <div class="trace-card" style="border-left-color: #fbc02d;">
+            <h3>【ループ4回目】 i = 4 のとき （最後の「5」をセットできるか？）</h3>
+            <p>さあ、4周目の手前です。現在の <code>i</code> は 4 になっています。<br>
+            目的である「配列のすべての要素を処理する」ためには、<span class="important-text">この i = 4 のときでも、while文の条件判定が「真（True）」になって、ループの中に入り込んでもらわなければ困ります！</span><br>
+            もし中に入ることができれば、<code>arr[5 - 4] = arr[1]</code> すなわち 1番目の要素である <strong>5</strong> が <code>res</code> に追加され、目標の <code>{20, 15, 10, 5}</code> が完璧に完成します！<br>
+            処理が終わると <code>i</code> は 5 に増えます。</p>
+            
+            <div class="memo-simulation">
+                <div class="array-visual">
+                    <div class="array-block"><div class="array-idx">[1]</div><div class="array-val target-idx">5</div></div>
+                    <div class="array-block"><div class="array-idx">[2]</div><div class="array-val">10</div></div>
+                    <div class="array-block"><div class="array-idx">[3]</div><div class="array-val">15</div></div>
+                    <div class="array-block"><div class="array-idx">[4]</div><div class="array-val">20</div></div>
+                </div>
+                <p>📋 res の中身: <code>{20, 15, 10, 5}</code> （完成！）</p>
+            </div>
+        </div>
+
+        <!-- ループ終了の判定 -->
+        <div class="trace-card" style="border-left-color: #10b981;">
+            <h3>【ループ終了】 i = 5 でブレーキ！</h3>
+            <p>4周目が終わり、5行目の条件式に戻ってきました。現在の <code>i</code> は 5 です。<br>
+            すべてのデータを移し終えたので、ここでループが止まる（偽になる）条件式でなければいけません。<br>
+            これまでの流れを整理すると、<stong>「iが1, 2, 3, 4のときはOK（真）で、5になったらストップ（偽）」</stong> になる条件式が正解です。<br>
+            <code>arr の要素数</code> は 4 ですから、条件式は <strong><code>i が arr の要素数 以下</code> （i <= 4）</strong> となります！</p>
+            
+            <div class="memo-simulation">
+                <div class="eval-box">
+                    ⚙️ i = 1, 2, 3, 4 のとき ➔ <code>i <= 4</code> は <span class="eval-condition eval-true">真 (True)</span> （実行する）<br>
+                    🛑 i = 5 のとき ➔ <code>5 <= 4</code> は <span class="eval-condition eval-false">偽 (False)</span> ❌ （ここで終了！）
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 罠まとめ -->
+    <div class="trap-alert-box">
+        <h4>🚨 プログラミング経験者ほど一瞬で即死する「0始まり」の偏見</h4>
+        <p style="margin-bottom: 0;">
+            普段、学校の授業や独学で C言語、Java、Python、JavaScript などを少しでも触ったことがある人ほど、この問題で高確率で失点します。<br>
+            なぜなら、それらの一般的な言語はすべて配列が「0番目」から始まるため、全要素をループさせる時の終了条件は <code>i < 要素数</code>（要素数より小さい）にするのが絶対的な常識だからです。<br>
+            しかし、基本情報技術者の擬似言語は、プログラミングをやったことがない人にも分かりやすいように、あえて**「1番目」から配列が始まる仕様**になっています！<br>
+            1からスタートして4番目までキッチリ回すためには、終了条件は <code>未満（<）</code> ではなく、必ず **<code>以下（<=）</code>** になります。自分の知っている言語の常識を一度捨てて、「試験独自のルール」を紙の上で冷静にトレースする意識を持ちましょう。
+        </p>
+    </div>
+</div>

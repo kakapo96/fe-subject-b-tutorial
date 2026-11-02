@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>選択ソートの仕組みと擬似言語 - 科目B対策</title>
+<style>
+    /* =========================================
+       Base & Typography
+       ========================================= */
+    :root {
+        --text-main: #333333;
+        --text-muted: #666666;
+        --bg-body: #f4f7f9;
+        --bg-paper: #ffffff;
+        --primary-color: #0056b3;
+        --primary-light: #e6f0fa;
+        --accent-color: #e65c00;
+        --accent-light: #fff3e6;
+        --code-bg: #282c34;
+        --code-text: #abb2bf;
+        --code-keyword: #c678dd;
+        --code-comment: #7f848e;
+        --code-variable: #e06c75;
+        --code-operator: #56b6c2;
+    }
+
+    body {
+        font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        line-height: 1.8;
+        color: var(--text-main);
+        background-color: var(--bg-body);
+        margin: 0;
+        padding: 2rem 1rem;
+        font-size: 16px;
+    }
+
+    /* =========================================
+       Layout & Container
+       ========================================= */
+    .container {
+        max-width: 840px;
+        margin: 0 auto;
+        background-color: var(--bg-paper);
+        padding: 3rem 4rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border-radius: 8px;
+    }
+
+    /* =========================================
+       Headings
+       ========================================= */
+    h1 {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-light);
+        padding-bottom: 0.5rem;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+        color: var(--text-main);
+        background-color: var(--primary-light);
+        padding: 0.8rem 1rem;
+        border-left: 6px solid var(--primary-color);
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 0 4px 4px 0;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        color: var(--accent-color);
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    h3::before {
+        content: "💡";
+        margin-right: 0.5rem;
+    }
+
+    /* =========================================
+       Content Elements
+       ========================================= */
+    p {
+        margin-bottom: 1.5rem;
+    }
+
+    strong {
+        font-weight: bold;
+        color: #d94c00;
+        background: linear-gradient(transparent 70%, #ffdfcc 70%);
+    }
+
+    ul {
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+
+    .code-inline {
+        font-family: "Consolas", monospace;
+        background-color: #f1f3f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.95em;
+        color: #e83e8c;
+    }
+
+    /* =========================================
+       Simulation Steps Styling
+       ========================================= */
+    .sim-card {
+        background-color: #fafbfc;
+        border: 1px solid #e1e4e8;
+        border-left: 4px solid #28a745;
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .sim-card h4 {
+        margin-top: 0;
+        color: #2c3e50;
+        border-bottom: 1px dashed #d1d5da;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .sim-card ul {
+        margin-bottom: 0;
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .sim-card li::before {
+        content: "•";
+        color: #28a745;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+
+    .array-change {
+        font-family: "Consolas", monospace;
+        font-size: 1.1em;
+        background-color: #fff;
+        padding: 0.3rem 0.6rem;
+        border: 1px solid #d1d5da;
+        border-radius: 4px;
+        display: inline-block;
+        margin-top: 0.2rem;
+    }
+    
+    .target { color: #d94c00; font-weight: bold; }
+    .fixed { color: #a0a0a0; }
+    .divider { color: #0056b3; font-weight: bold; margin: 0 4px; }
+
+    /* =========================================
+       Code Block Styling (Dark Theme)
+       ========================================= */
+    .code-section {
+        margin-bottom: 3rem;
+    }
+
+    .pre-requisites {
+        background-color: #f8f9fa;
+        border: 1px solid #e2e8f0;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .pre-requisites ul {
+        margin: 0;
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .pre-requisites li::before {
+        content: "✔";
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+        font-weight: bold;
+    }
+
+    pre.pseudo-code {
+        background-color: var(--code-bg);
+        color: var(--code-text);
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 1rem;
+        line-height: 1.6;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .kw { color: var(--code-keyword); font-weight: bold; }
+    .com { color: var(--code-comment); font-style: italic; }
+    .var { color: var(--code-variable); }
+    .op { color: var(--code-operator); }
+
+    /* =========================================
+       Callouts / Asides (Exam Points)
+       ========================================= */
+    .callout {
+        background-color: var(--accent-light);
+        border: 1px solid #ffcc99;
+        border-left: 6px solid var(--accent-color);
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(230, 92, 0, 0.05);
+    }
+
+    .callout-list dt {
+        font-weight: bold;
+        color: var(--text-main);
+        margin-top: 0.8rem;
+    }
+
+    .callout-list dt::before {
+        content: "▶";
+        color: var(--accent-color);
+        font-size: 0.8em;
+        margin-right: 0.4rem;
+        vertical-align: middle;
+    }
+
+    .callout-list dd {
+        margin-left: 1.5rem;
+        margin-bottom: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .callout-list dd.answer {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        background-color: #fff;
+        display: inline-block;
+        padding: 0.2rem 0.8rem;
+        border: 1px dashed var(--primary-color);
+        border-radius: 4px;
+        margin-top: 0.3rem;
+    }
+
+    .swap-block {
+        background-color: #fff;
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-family: "Consolas", monospace;
+        line-height: 1.8;
+        margin-top: 0.5rem;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <article>
+        <header>
+            <h1>科目B対策：選択ソートの仕組みと擬似言語</h1>
+        </header>
+
+        <section>
+            <h2>テーマ：一番背の低い人を探して前に立たせる（選択ソート）</h2>
+            <p>今回もバラバラの5つの数字を<strong>「小さい順（昇順）」</strong>に並べ替えます。<br>
+            最初の配列： <span class="code-inline">[5, 3, 4, 1, 2]</span></p>
+
+            <div style="background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                <h4 style="margin-top: 0; color: #856404; margin-bottom: 10px;">選択ソートのたった1つのルール</h4>
+                <p style="margin-bottom: 0;"><strong>「まだ並んでいない範囲の中から『一番小さい数（最小値）』を探し出し、その範囲の先頭の人と場所をチェンジする」</strong></p>
+            </div>
+
+            <h3>動きのシミュレーション</h3>
+            
+            
+            <div class="sim-card">
+                <h4>【1周目】 探す範囲：1番目〜5番目</h4>
+                <ul>
+                    <li>現在の配列： <span class="array-change">[<span class="target">5</span>, 3, 4, <span class="target">1</span>, 2]</span> （先頭は5）</li>
+                    <li>この範囲で「一番小さい数」を探す → 4番目の <span class="target">1</span> だ！</li>
+                    <li>先頭の <span class="target">5</span> と、見つけた <span class="target">1</span> をチェンジ！</li>
+                    <li>結果： <span class="array-change">[<span class="target">1</span> <span class="divider">|</span> 3, 4, <span class="target">5</span>, 2]</span><br>
+                    <small style="color: #666; display: block; margin-top: 5px;">（これで1番目の 1 は場所が確定！次は2番目以降を見ます）</small></li>
+                </ul>
+            </div>
+
+            <div class="sim-card">
+                <h4>【2周目】 探す範囲：2番目〜5番目</h4>
+                <ul>
+                    <li>現在の配列： <span class="array-change">[<span class="fixed">1</span> <span class="divider">|</span> <span class="target">3</span>, 4, 5, <span class="target">2</span>]</span> （未確定の先頭は3）</li>
+                    <li>2番目以降で「一番小さい数」を探す → 5番目の <span class="target">2</span> だ！</li>
+                    <li>先頭の <span class="target">3</span> と、見つけた <span class="target">2</span> をチェンジ！</li>
+                    <li>結果： <span class="array-change">[<span class="fixed">1,</span> <span class="target">2</span> <span class="divider">|</span> 4, 5, <span class="target">3</span>]</span></li>
+                </ul>
+            </div>
+
+            <div class="sim-card">
+                <h4>【3周目】 探す範囲：3番目〜5番目</h4>
+                <ul>
+                    <li>現在の配列： <span class="array-change">[<span class="fixed">1, 2</span> <span class="divider">|</span> <span class="target">4</span>, 5, <span class="target">3</span>]</span> （未確定の先頭は4）</li>
+                    <li>3番目以降で「一番小さい数」を探す → 5番目の <span class="target">3</span> だ！</li>
+                    <li>先頭の <span class="target">4</span> と、見つけた <span class="target">3</span> をチェンジ！</li>
+                    <li>結果： <span class="array-change">[<span class="fixed">1, 2,</span> <span class="target">3</span> <span class="divider">|</span> 5, <span class="target">4</span>]</span></li>
+                </ul>
+            </div>
+
+            <div class="sim-card">
+                <h4>【4周目】 探す範囲：4番目〜5番目</h4>
+                <ul>
+                    <li>現在の配列： <span class="array-change">[<span class="fixed">1, 2, 3</span> <span class="divider">|</span> <span class="target">5</span>, <span class="target">4</span>]</span> （未確定の先頭は5）</li>
+                    <li>4番目以降で一番小さい数を探す → 5番目の <span class="target">4</span> だ！</li>
+                    <li>先頭の <span class="target">5</span> と <span class="target">4</span> をチェンジ！</li>
+                    <li>結果： <span class="array-change">[<span class="fixed">1, 2, 3,</span> <span class="target">4</span> <span class="divider">|</span> <span class="target">5</span>]</span><br>
+                    <small style="color: #666; display: block; margin-top: 5px;">これで5番目（最後）も自動的に確定し、完全に並び替わりました！</small></li>
+                </ul>
+            </div>
+        </section>
+        <section class="code-section">
+            <h2>本番形式：選択ソートの擬似言語</h2>
+            
+            <div class="pre-requisites">
+                <ul>
+                    <li>配列 <span class="code-inline">data</span> には、バラバラの数字が入っているとします。</li>
+                    <li>配列の要素番号（インデックス）は <strong>1 から始まります</strong>。</li>
+                </ul>
+            </div>
+
+            <pre class="pseudo-code"><code><span class="com">〇整数型の配列: data</span>
+<span class="com">〇整数型: i, j, tmp</span>
+<span class="com">〇整数型: minIdx  // 一番小さい数が入っている「場所（インデックス）」をメモする箱</span>
+<span class="com">〇整数型: N</span>
+
+<span class="var">N</span> <span class="op">←</span> <span class="var">data</span>の要素数  <span class="com">// 例：データが5個なら N=5</span>
+
+<span class="com">// 【外側のループ】 確定させる場所を左から順番に進めていく</span>
+<span class="kw">for</span> (<span class="var">i</span> を 1 から <span class="var">N</span> <span class="op">-</span> 1 まで 1 ずつ増やす)
+    
+    <span class="com">// とりあえず、今の先頭（i番目）が一番小さいと仮定して場所をメモする</span>
+    <span class="var">minIdx</span> <span class="op">←</span> <span class="var">i</span>
+    
+    <span class="com">// 【内側のループ】 仮定した数より「もっと小さい数」がないか探す！</span>
+    <span class="com">// (i + 1)番目から最後までを探しに行く</span>
+    <span class="kw">for</span> (<span class="var">j</span> を <span class="var">i</span> <span class="op">+</span> 1 から <span class="var">N</span> まで 1 ずつ増やす)
+        
+        <span class="com">// もし、いま記録している最小値より小さい数を見つけたら…</span>
+        <span class="kw">if</span> (<span class="var">data</span>[<span class="var">j</span>] <span class="op">&lt;</span> <span class="var">data</span>[<span class="var">minIdx</span>])
+            <span class="var">minIdx</span> <span class="op">←</span> <span class="var">j</span>   <span class="com">// 「一番小さい数の場所」のメモを書き換える！</span>
+        <span class="kw">endif</span>
+    <span class="kw">endfor</span>
+    
+    <span class="com">// 探し終わったら、未確定エリアの先頭(i)と、見つけた最小値(minIdx)をチェンジ！</span>
+    <span class="var">tmp</span> <span class="op">←</span> <span class="var">data</span>[<span class="var">i</span>]
+    <span class="var">data</span>[<span class="var">i</span>] <span class="op">←</span> <span class="var">data</span>[<span class="var">minIdx</span>]
+    <span class="var">data</span>[<span class="var">minIdx</span>] <span class="op">←</span> <span class="var">tmp</span>
+
+<span class="kw">endfor</span></code></pre>
+        </section>
+
+        <section>
+            <h2>本番の試験で「穴埋め」にされるポイント</h2>
+            <p>試験では、このプログラムのどこかが「空欄（ <span class="code-inline">[　a　]</span> など）」になっていて、そこに入る式を選ばせる問題がよく出ます。<br>
+            <strong>特に狙われるのは、以下の3箇所です。</strong>バブルソートとの違いを意識して確認しましょう。</p>
+
+            <aside class="callout">
+                <h3>狙われるポイント①：内側のループのスタート地点</h3>
+                <dl class="callout-list">
+                    <dt>空欄の例</dt>
+                    <dd><span class="code-inline">for (j を [　a　] から N まで 1 ずつ増やす)</span></dd>
+                    
+                    <dt>正解</dt>
+                    <dd class="answer">i + 1</dd>
+                    
+                    <dt>なぜ？</dt>
+                    <dd>外側のループ <span class="code-inline">i</span> は「いま確定させようとしている場所（未確定エリアの先頭）」です。一番小さい数を探す旅は、その場所自身をもう一度見る必要はなく、<strong>「その1つ右の場所（i + 1）」</strong>から最後までを探しに行けばよいからです。</dd>
+                </dl>
+            </aside>
+
+            <aside class="callout">
+                <h3>狙われるポイント②：最小値を更新する条件</h3>
+                <dl class="callout-list">
+                    <dt>空欄の例</dt>
+                    <dd><span class="code-inline">if (data[j] &lt; [　b　])</span></dd>
+                    
+                    <dt>正解</dt>
+                    <dd class="answer">data[minIdx]</dd>
+                    
+                    <dt>なぜ？</dt>
+                    <dd>「今見ている数（<span class="code-inline">data[j]</span>）」が、<strong>「今までで一番小さいと思っていた数（<span class="code-inline">data[minIdx]</span>）」</strong>よりも小さかったら、新記録更新です。このとき、場所のメモである <span class="code-inline">minIdx</span> を、見つけた新しい場所 <span class="code-inline">j</span> に書き換えます。</dd>
+                </dl>
+            </aside>
+
+            <aside class="callout">
+                <h3>狙われるポイント③：入れ替え（スワップ）の対象</h3>
+                <dl class="callout-list">
+                    <dt>空欄の例</dt>
+                    <dd>
+                        <div class="swap-block">
+                            tmp ← data[i]<br>
+                            data[i] ← [　c　]<br>
+                            [　c　] ← tmp
+                        </div>
+                    </dd>
+                    
+                    <dt>正解</dt>
+                    <dd class="answer">data[minIdx]</dd>
+                    
+                    <dt>なぜ？</dt>
+                    <dd>
+                        バブルソートは「隣同士（j と j+1）」を入れ替えていましたが、選択ソートは<strong>「未確定エリアの先頭（i）と、探し出した一番小さい数の場所（minIdx）」</strong>をドカンと一発で入れ替えます。
+                        <div class="swap-block">
+                            <span style="color:#0056b3; font-weight:bold;">tmp</span> ← <span style="color:#e65c00; font-weight:bold;">data[i]</span><br>
+                            <span style="color:#e65c00; font-weight:bold;">data[i]</span> ← <span style="color:#28a745; font-weight:bold;">data[minIdx]</span><br>
+                            <span style="color:#28a745; font-weight:bold;">data[minIdx]</span> ← <span style="color:#0056b3; font-weight:bold;">tmp</span>
+                        </div>
+                    </dd>
+                </dl>
+            </aside>
+
+            <p style="margin-top: 2rem; font-size: 1.1rem; text-align: center; font-weight: bold; color: var(--text-main);">
+                【試験で1秒で見抜くコツ】<br>
+                内側のループにある <span class="code-inline">if</span> 文が「場所のメモの更新だけ」で、入れ替え（3行セット）を内側ループが「終わった後」に1回だけやっていたら、それは「選択ソート」です！
+            </p>
+        </section>
+    </article>
+</div>
+
+</body>
+</html>
