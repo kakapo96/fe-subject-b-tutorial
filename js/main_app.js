@@ -144,30 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
  }
  
  // ＝＝＝＝ ★新規追加：チュートリアルクリア時の処理 ＝＝＝＝
- function completeTutorial() {
-     isTutorialCleared = true;
-     alert('🎉 チュートリアルクリア！\nStage 1「基礎編」が解放されました！');
-     
-     // メイン画面のUIをアンロック状態に書き換える
-     updateStage1UI();
-     
-     // ロードマップ画面に自動で戻す
-     backToRoadmap();
- }
- 
- // ＝＝＝＝ ★新規追加：Stage 1の見た目を解放状態にする処理 ＝＝＝＝
- function updateStage1UI() {
-     const stage1Card = document.getElementById('stage-card-1');
-     const stage1Btn = document.getElementById('btn-stage-1');
-     
-     if (stage1Card && stage1Btn) {
-         stage1Card.classList.remove('locked'); // グレーアウト用のクラスを削除
-         stage1Btn.disabled = false;            // ボタンを押せるようにする
-         stage1Btn.innerText = '学習を開始';     // ボタンの文字を変更
-     }
- }
-
- function completeTutorial() {
+  function completeTutorial() {
     isTutorialCleared = true;
     
     // localStorageにクリア状態を保存
@@ -181,3 +158,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ロードマップ画面に自動で戻す
     backToRoadmap();
 }
+ // ＝＝＝＝ ★新規追加：Stage 1の見た目を解放状態にする処理 ＝＝＝＝
+ function updateStage1UI() {
+     const stage1Card = document.getElementById('stage-card-1');
+     const stage1Btn = document.getElementById('btn-stage-1');
+     
+     if (stage1Card && stage1Btn) {
+         stage1Card.classList.remove('locked'); // グレーアウト用のクラスを削除
+         stage1Btn.disabled = false;            // ボタンを押せるようにする
+         stage1Btn.innerText = '学習を開始';     // ボタンの文字を変更
+     }
+ }
+
