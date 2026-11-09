@@ -176,26 +176,25 @@ const quizData = {
         ]
     },
     
-   stage5: {
-    title: "ステージ5：応用 オブジェクト指向",
-       topics: [
+stage5: {
+        title: "ステージ5：応用 オブジェクト指向",
+        topics: [
             {
                 id: "oriented_01",
                 title: "01 オブジェクト指向 トレース式",
-                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_Trace.html" 
-             },
-             {
-                 id: "oriented_02",
-                 title: "02 オブジェクト指向 選択肢",
-                  introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_anaume.html"
+                introHTML: "資料html/ステージ(5) 応用オブジェクト指向/oriented_Trace.html" 
+            },
+            {
+                id: "oriented_02",
+                title: "02 オブジェクト指向 選択肢",
+                introHTML: "資料html/ステージ(5) 応用オブジェクト指向/oriented_anaume.html"
             },
             {
                 id: "oriented_03",
                 title: "03 オブジェクト指向 最終確認",
-                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_test.html"
+                introHTML: "資料html/ステージ(5) 応用オブジェクト指向/oriented_test.html"
             } 
         ]
-    },
-　　
+    }
 };
 
