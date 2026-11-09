@@ -4,6 +4,8 @@
  */
 
 let currentStageNum = null;
+let currentStageData = null;
+let currentTopicData = null;
 
 // HTMLの読み込み完了時にプログレスバーを初期化
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,13 +37,14 @@ function updateProgressUI() {
 // ＝＝＝＝ 第1層：ロードマップからステージを選択 ＝＝＝＝
 function selectStage(stageNum) {
     currentStageNum = stageNum;
+    const stageKey = `stage${stageNum}`;
+    currentStageData = quizData[stageKey];
+    
     document.getElementById('roadmap-layer').style.display = 'none';
     document.getElementById('learning-layer').style.display = 'block';
     
-    const stageKey = `stage${stageNum}`;
-    
-    if (quizData[stageKey]) {
-        renderTopicMenu(quizData[stageKey]);
+    if (currentStageData) {
+        renderTopicMenu(currentStageData);
     } else {
         document.getElementById('dynamic-content-area').innerHTML = `
             <div class="nav-header">
@@ -82,62 +85,72 @@ function renderTopicMenu(stageData) {
     container.innerHTML = html;
 }
 
-// ＝＝＝＝ 第3層：解説・問題タブ または iframe を描画 ＝＝＝＝
+// ＝＝＝＝ 第3層：コンテンツを描画（タブあり/なし自動判定） ＝＝＝＝
 function startTopic(topicId) {
-    const stageData = quizData[`stage${currentStageNum}`];
-    const topic = stageData.topics.find(t => t.id === topicId);
-    if (!topic) return;
+    currentTopicData = currentStageData.topics.find(t => t.id === topicId);
+    if (!currentTopicData) return;
 
     const container = document.getElementById('dynamic-content-area');
 
     // ★クリアボタン生成ロジック（共通）
     const clearedTopics = JSON.parse(localStorage.getItem('fe_algo_cleared_topics')) || [];
-    const isCleared = clearedTopics.includes(topic.id);
+    const isCleared = clearedTopics.includes(topicId);
     const clearBtnHTML = isCleared
         ? `<span style="color: #28a745; font-weight: bold; margin-left: auto; font-size: 1.1rem;">✔ クリア済み</span>`
-        : `<button onclick="markAsCleared('${topic.id}')" style="margin-left: auto; background: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">このトピックをクリア</button>`;
+        : `<button onclick="markAsCleared('${topicId}')" style="margin-left: auto; background: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">このトピックをクリア</button>`;
 
-    // ★新規：standaloneHTML（独立したHTML）が指定されている場合は iframe で展開する
-    if (topic.standaloneHTML) {
-        container.innerHTML = `
-            <div class="nav-header" style="display: flex; align-items: center;">
-                <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
-                <h2 style="color: #004494; margin-left: 15px;">${topic.title}</h2>
-                ${clearBtnHTML}
-            </div>
-            <iframe src="${topic.standaloneHTML}" style="width: 100%; height: 85vh; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"></iframe>
-        `;
-        return; // ここで処理を終了し、以降の fetch 処理は行わない
-    }
-
-    // ★既存：introHTML / quizHTML を fetch する処理
     container.innerHTML = '<p style="text-align:center; font-weight:bold;">データを読み込み中...</p>';
 
-    Promise.all([
-        fetch(topic.introHTML).then(res => res.ok ? res.text() : Promise.reject(res)),
-        topic.quizHTML ? fetch(topic.quizHTML).then(res => res.ok ? res.text() : Promise.resolve("")) : Promise.resolve("")
-    ])
-    .then(([introData, quizDataHtml]) => {
-        container.innerHTML = `
-            <div class="nav-header" style="display: flex; align-items: center;">
-                <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
-                <h2 style="color: #004494; margin-left: 15px;">${topic.title}</h2>
-                ${clearBtnHTML}
-            </div>
+    // ① introHTML（解説部分）を読み込む
+    fetch(currentTopicData.introHTML)
+    .then(res => res.ok ? res.text() : Promise.reject(res))
+    .then(introData => {
+        
+        // ② quizHTML（問題部分）が設定されているかチェック
+        if (currentTopicData.quizHTML) {
+            // ▼▼▼ quizHTMLがある場合（Stage 1〜3など）：タブ形式で表示 ▼▼▼
+            fetch(currentTopicData.quizHTML)
+            .then(res => res.ok ? res.text() : Promise.resolve(""))
+            .then(quizDataHtml => {
+                container.innerHTML = `
+                    <div class="nav-header" style="display: flex; align-items: center;">
+                        <button class="back-btn" onclick="renderTopicMenu(currentStageData)">← メニューに戻る</button>
+                        <h2 style="color: #004494; margin-left: 15px;">${currentTopicData.title}</h2>
+                        ${clearBtnHTML}
+                    </div>
 
-            <div class="main-tabs">
-                <button id="tab-btn-intro" class="main-tab-btn active" onclick="switchMainTab('intro')">📖 解説</button>
-                <button id="tab-btn-quiz" class="main-tab-btn" onclick="switchMainTab('quiz')">✍️ 問題</button>
-            </div>
+                    <div class="main-tabs">
+                        <button id="tab-btn-intro" class="main-tab-btn active" onclick="switchMainTab('intro')">📖 解説</button>
+                        <button id="tab-btn-quiz" class="main-tab-btn" onclick="switchMainTab('quiz')">✍️ 問題</button>
+                    </div>
 
-            <div id="main-tab-intro" class="main-tab-content active">${introData}</div>
-            <div id="main-tab-quiz" class="main-tab-content" style="display:none;">${quizDataHtml}</div>
-        `;
+                    <div id="main-tab-intro" class="main-tab-content active" style="animation: fadeIn 0.3s ease;">
+                        ${introData}
+                    </div>
+                    <div id="main-tab-quiz" class="main-tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                        ${quizDataHtml}
+                    </div>
+                `;
+            });
+        } else {
+            // ▼▼▼ quizHTMLがない場合（Stage 4以降など）：タブなしで地続き表示 ▼▼▼
+            container.innerHTML = `
+                <div class="nav-header" style="display: flex; align-items: center;">
+                    <button class="back-btn" onclick="renderTopicMenu(currentStageData)">← メニューに戻る</button>
+                    <h2 style="color: #004494; margin-left: 15px;">${currentTopicData.title}</h2>
+                    ${clearBtnHTML}
+                </div>
+                
+                <div style="animation: fadeIn 0.3s ease; padding-top: 10px;">
+                    ${introData}
+                </div>
+            `;
+        }
     })
     .catch(err => {
         container.innerHTML = `
             <div class="nav-header">
-                <button class="back-btn" onclick="renderTopicMenu(quizData.stage${currentStageNum})">← メニューに戻る</button>
+                <button class="back-btn" onclick="renderTopicMenu(currentStageData)">← メニューに戻る</button>
             </div>
             <div style="background: #f8d7da; padding: 15px; color: #721c24; border-radius: 8px; margin-top: 15px;">
                 <strong>⚠️ 読み込みエラー:</strong> ファイルが見つかりません。パスを確認してください。<br>
@@ -165,19 +178,9 @@ function backToRoadmap() {
     document.getElementById('learning-layer').style.display = 'none';
     document.getElementById('roadmap-layer').style.display = 'block';
     document.getElementById('dynamic-content-area').innerHTML = ''; 
+    currentStageData = null;
+    currentTopicData = null;
     updateProgressUI();
-}
-
-// ＝＝＝＝ クイズ画面のページ切り替え処理 ＝＝＝＝
-function switchPage(targetId) {
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
-    const targetPage = document.getElementById(targetId);
-    if (targetPage) {
-        targetPage.classList.add('active');
-        window.scrollTo(0, 0);
-    }
 }
 
 // ＝＝＝＝ トピックをクリア状態にする処理 ＝＝＝＝
@@ -189,23 +192,23 @@ function markAsCleared(topicId) {
     }
     
     updateProgressUI();
-    startTopic(topicId);
+    startTopic(topicId); // 画面を再描画して「クリア済み」バッジを表示
 }
 
-// ＝＝＝＝ 全進捗リセット（デモ用） ＝＝＝＝
+// ＝＝＝＝ 全進捗リセット（デモ・動作確認用） ＝＝＝＝
 function resetProgress() {
     if(confirm("すべての学習進捗をリセットしますか？ (デモ・動作確認用)")) {
         localStorage.removeItem('fe_algo_cleared_topics');
         updateProgressUI();
         
-        if (document.getElementById('learning-layer').style.display === 'block' && currentStageNum !== null) {
-            renderTopicMenu(quizData[`stage${currentStageNum}`]);
+        if (document.getElementById('learning-layer').style.display === 'block' && currentStageData) {
+            renderTopicMenu(currentStageData);
         }
         alert("進捗をリセットしました。");
     }
 }
 
-// ＝＝＝＝ 互換性維持：古いチュートリアル完了ボタン用 ＝＝＝＝
+// ＝＝＝＝ 互換性維持：チュートリアル完了ボタン用 ＝＝＝＝
 function completeTutorial() {
     markAsCleared('tut_07');
     alert('🎉 チュートリアルクリア！進捗が保存されました！');
