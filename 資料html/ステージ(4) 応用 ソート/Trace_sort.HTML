@@ -5,19 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FE科目B 探索・ソートアルゴリズム 特訓モジュール（全7問）</title>
 <style>
-  body {
+ body {
     font-family: 'Consolas', 'Segoe UI', Meiryo, sans-serif;
     margin: 0; 
-    padding: 0;
-    background-color: #e0e0e0;
+    padding: 20px; /* iframe内の余白を確保 */
+    background-color: #fff; /* 背景を白に統一 */
     color: #1a1a1a;
+    box-sizing: border-box;
   }
   .container {
-    max-width: 1000px;
+    width: 100%; /* iframeの幅に合わせる */
+    max-width: 900px;
     margin: 0 auto;
     background: #fff;
-    min-height: 100vh;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    /* 不要な影や最小高さを削除してスッキリさせる */
   }
   .tabs {
     display: flex;
@@ -777,7 +778,8 @@ pivotIndex = 3, pivotValue = 40. leftPointer = 1, rightPointer = 5.
   let startTimes = {};
   let endTimes = {};
 
-  window.onload = function() {
+// iframe内でも確実に実行されるように DOMContentLoaded に変更
+  document.addEventListener('DOMContentLoaded', function() {
     for (let i = 1; i <= 7; i++) {
       let timerEl = document.getElementById('timer-' + i);
       if(timerEl) {
@@ -787,7 +789,7 @@ pivotIndex = 3, pivotValue = 40. leftPointer = 1, rightPointer = 5.
         timerEl.innerText = `${m}:${s}.000`;
       }
     }
-  };
+  });
 
   function switchTab(id) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
