@@ -129,26 +129,20 @@ const quizData = {
             {
                 id: "oop",
                 title: "01 オブジェクト指向",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/09_オブジェクト指向/oop_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/09_オブジェクト指向/oop_quiz.html" 
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/オブジェクト指向/oop_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/オブジェクト指向/oop_quiz.html" 
             },
             {
                 id: "recursion",
                 title: "02 再帰関数",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/10_再帰関数/recursion_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/10_再帰関数/recursion_quiz.html" 
-            },
-            {
-                id: "merge_sort",
-                title: "03 マージソート",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/11_マージソート/merge_sort_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/11_マージソート/merge_sort_quiz.html" 
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/再帰関数/recursion_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/再帰関数/recursion_quiz.html" 
             },
             {
                 id: "binary_tree",
-                title: "04 ２分木",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/12_2分木/binary_tree_quiz.html" 
+                title: "03 ２分木",
+                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/2分木/binary_tree_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/2分木/binary_tree_quiz.html" 
             }
         ]
     },
