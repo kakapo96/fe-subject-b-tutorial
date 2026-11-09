@@ -155,17 +155,17 @@ const quizData = {
             {
                 id: "advanced_sort_01",
                 title: "01 ソートアルゴリズム トレース式",
-                introHTML: "資料html/ステージ(4) 応用 ソート/Trace_sort.HTML" 
+                standaloneHTML: "資料html/ステージ(4) 応用 ソート/Trace_sort.HTML" 
              },
              {
                  id: "advanced_sort_02",
                  title: "02 ソートアルゴリズム 選択肢",
-                  introHTML: "資料html/ステージ(4) 応用 ソート/anaume_sort.html"
+                  standaloneHTML: "資料html/ステージ(4) 応用 ソート/anaume_sort.html"
             },
             {
                 id: "advanced_sort_03",
                 title: "03 ソートアルゴリズム最終確認",
-                introHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html"
+                standaloneHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html"
             } 
         ]
     },
@@ -176,17 +176,17 @@ stage5: {
             {
                 id: "oriented_01",
                 title: "01 オブジェクト指向 トレース式",
-                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_Trace.html" 
+                standaloneHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_Trace.html" 
             },
             {
                 id: "oriented_02",
                 title: "02 オブジェクト指向 選択肢",
-                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_anaume.html"
+                standaloneHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_anaume.html"
             },
             {
                 id: "oriented_03",
                 title: "03 オブジェクト指向 最終確認",
-                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_test.html"
+                standaloneHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_test.html"
             } 
         ]
     }
