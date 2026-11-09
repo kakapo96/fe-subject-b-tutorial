@@ -161,17 +161,38 @@ const quizData = {
             {
                 id: "advanced_sort_01",
                 title: "01 ソートアルゴリズム トレース式",
-                introHTML: "資料html/ステージ(4) アプリケーション/Trace_sort.HTML" 
+                introHTML: "資料html/ステージ(4) 応用 ソート/Trace_sort.HTML" 
              },
              {
                  id: "advanced_sort_02",
-                 title: "02 ソートアルゴリズム",
-                  introHTML: "資料html/ステージ(4) アプリケーション/anaume_sort.html"
+                 title: "02 ソートアルゴリズム 選択肢",
+                  introHTML: "資料html/ステージ(4) 応用 ソート/anaume_sort.html"
             },
             {
                 id: "advanced_sort_03",
                 title: "03 ソートアルゴリズム最終確認",
-                introHTML: "資料html/ステージ(4) アプリケーション/kou_sort.html"
+                introHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html"
+            } 
+        ]
+    },
+    
+   stage5: {
+    title: "ステージ5：応用 オブジェクト指向",
+       topics: [
+            {
+                id: "oriented_01",
+                title: "01 オブジェクト指向 トレース式",
+                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_Trace.html" 
+             },
+             {
+                 id: "oriented_02",
+                 title: "02 オブジェクト指向 選択肢",
+                  introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_anaume.html"
+            },
+            {
+                id: "oriented_03",
+                title: "03 オブジェクト指向 最終確認",
+                introHTML: "資料html/ステージ(5) 応用 オブジェクト指向/oriented_test.html"
             } 
         ]
     },
