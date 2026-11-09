@@ -161,17 +161,17 @@ const quizData = {
 
              {
                 id: "advanced_sort_module",
-                title: "ソートアルゴリズム　トレース式",
+                title: "01 ソートアルゴリズム　トレース式",
                  standaloneHTML: "資料html/ステージ(4) 応用 ソート/Trace_sort.HTML" // そのまま読み込むHTML
             }
              {
                 id: "advanced_sort_module",
-                title: "ソートアルゴリズム　穴埋め式",
+                title: "02 ソートアルゴリズム　穴埋め式",
                  standaloneHTML: "資料html/ステージ(4) 応用 ソート/anaume_sort.html" // そのまま読み込むHTML
             }
             {
                 id: "advanced_sort_module",
-                title: "探索・ソートアルゴリズム 特訓モジュール（全7問）",
+                title: "03 ソートアルゴリズム 最終確認",
                  standaloneHTML: "資料html/ステージ(4) 応用 ソート/kou_sort.html" // そのまま読み込むHTML
             }
 
