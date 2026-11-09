@@ -173,7 +173,7 @@ const quizData = {
             title: "03 ソートアルゴリズム最終確認",
             introHTML: "資料html/ステージ(4) アプリケーション/kou_sort.html"
         }
-    　　　　　]
-　　　　　　}
+    　]
+　　},
 };
 
