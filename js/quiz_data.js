@@ -129,20 +129,20 @@ const quizData = {
             {
                 id: "oop",
                 title: "01 オブジェクト指向",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/オブジェクト指向/oop_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/オブジェクト指向/oop_quiz.html" 
+                introHTML: "資料html/ステージ(3) 再帰 指向 ２分木/オブジェクト指向/oop_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 ２分木/オブジェクト指向/oop_quiz.html" 
             },
             {
                 id: "recursion",
                 title: "02 再帰関数",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/再帰関数/recursion_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/再帰関数/recursion_quiz.html" 
+                introHTML: "資料html/ステージ(3) 再帰 指向 ２分木/再帰関数/recursion_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 ２分木/再帰関数/recursion_quiz.html" 
             },
             {
                 id: "binary_tree",
                 title: "03 ２分木",
-                introHTML: "資料html/ステージ(3) 再帰 指向 2分木/2分木/binary_tree_intro.html", 
-                quizHTML:  "資料html/ステージ(3) 再帰 指向 2分木/2分木/binary_tree_quiz.html" 
+                introHTML: "資料html/ステージ(3) 再帰 指向 ２分木/２分木/binary_tree_intro.html", 
+                quizHTML:  "資料html/ステージ(3) 再帰 指向 ２分木/２分木/binary_tree_quiz.html" 
             }
         ]
     },
