@@ -1,0 +1,933 @@
+<!--[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span) -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FE科目B オブジェクト指向・関数 特訓モジュールB（全6問）</title>
+<style>
+ body {
+ font-family: 'Consolas', 'Segoe UI', Meiryo, sans-serif;
+ margin: 0; 
+ padding: 0;
+ background-color: #e0e0e0;
+ color: #1a1a1a;
+ }
+ .container {
+ max-width: 1000px;
+ margin: 0 auto;
+ background: #fff;
+ min-height: 100vh;
+ box-shadow: 0 0 10px rgba(0,0,0,0.2);
+ }
+ .tabs {
+ display: flex;
+ flex-wrap: wrap;
+ background: #2c3e50;
+ color: #fff;
+ padding: 0;
+ margin: 0;
+ list-style: none;
+ }
+ .tab {
+ flex: 1;
+ min-width: 120px;
+ text-align: center;
+ padding: 15px 10px;
+ cursor: pointer;
+ background: #34495e;
+ border-right: 1px solid #2c3e50;
+ font-weight: bold;
+ }
+ .tab:last-child {
+ border-right: none;
+ }
+ .tab.active {
+ background: #fff;
+ color: #2c3e50;
+ }
+ .content-area {
+ position: relative;
+ }
+ .tab-content {
+ display: none;
+ }
+ .tab-content.active {
+ display: block;
+ }
+ .sticky-timer-container {
+ position: sticky;
+ top: 0;
+ z-index: 9999;
+ background: #fff;
+ padding: 15px;
+ text-align: center;
+ border-bottom: 3px solid #2c3e50;
+ box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+ font-size: 2.5em;
+ font-weight: bold;
+ font-family: monospace;
+ transition: background-color 0.1s, color 0.1s;
+ }
+ .timer-orange {
+ color: #ff9800 !important;
+ }
+ .timer-red-blink {
+ background-color: #212121 !important;
+ color: #d93025 !important;
+ animation: blinker 0.5s linear infinite;
+ }
+ @keyframes blinker {
+ 50% { opacity: 0; }
+ }
+ .timer-stopped {
+ background-color: #f5f5f5 !important;
+ color: #1a73e8 !important;
+ animation: none !important;
+ border-bottom: 3px solid #1a73e8;
+ }
+ .start-btn {
+ display: block;
+ width: 60%;
+ margin: 100px auto;
+ padding: 20px;
+ background: #d93025;
+ color: #fff;
+ text-align: center;
+ font-size: 1.5em;
+ font-weight: bold;
+ cursor: pointer;
+ border: none;
+ border-radius: 4px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+ }
+ .start-btn:hover {
+ background: #b71c1c;
+ }
+ .question-body {
+ display: none;
+ padding: 30px;
+ }
+ .scroll-force {
+ margin-bottom: 30px;
+ }
+ .text-content {
+ line-height: 1.8;
+ font-size: 1.1em;
+ padding: 20px;
+ background: #fafafa;
+ border: 1px solid #ccc;
+ margin-bottom: 20px;
+ }
+ .state-list-area {
+ margin-bottom: 20px;
+ padding: 15px;
+ background: #fdfdfd;
+ border: 1px solid #ddd;
+ border-radius: 4px;
+ }
+ .state-list-area ul {
+ margin: 0;
+ padding-left: 20px;
+ line-height: 1.6;
+ }
+ .code-block {
+ background-color: #f8f9fa;
+ border: 1px solid #ddd;
+ padding: 15px;
+ border-radius: 5px;
+ font-family: 'Consolas', monospace;
+ white-space: pre-wrap;
+ overflow-x: auto;
+ line-height: 1.5;
+ font-size: 14.5px;
+ margin-bottom: 20px;
+ }
+ .options-list {
+ list-style-type: none;
+ padding: 0;
+ margin-bottom: 50px;
+ }
+ .options-list li {
+ margin-bottom: 15px;
+ padding: 15px;
+ background: #fff;
+ border: 1px solid #bdc3c7;
+ cursor: default;
+ font-size: 1.05em;
+ }
+ .ans-btn {
+ display: block;
+ width: 80%;
+ margin: 50px auto 20px;
+ padding: 15px;
+ background: #2980b9;
+ color: #fff;
+ text-align: center;
+ font-size: 1.2em;
+ font-weight: bold;
+ cursor: pointer;
+ border: none;
+ border-radius: 4px;
+ }
+ .ans-btn:hover {
+ background: #1c5980;
+ }
+ .answer-block {
+ display: none;
+ background: #fff;
+ border-left: 6px solid #2980b9;
+ padding: 25px;
+ margin-top: 40px;
+ line-height: 1.7;
+ font-size: 1.05em;
+ box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+ }
+ .trace-box {
+ margin-top: 25px;
+ padding: 20px;
+ background: #e8f0fe;
+ border: 1px dashed #1a73e8;
+ border-radius: 4px;
+ }
+ .trace-box::before {
+ content: "【論理トレース】";
+ display: block;
+ font-weight: bold;
+ color: #1a73e8;
+ margin-bottom: 10px;
+ }
+</style>
+</head>
+<body>
+
+<div class="container">
+ <ul class="tabs">
+ <li class="tab active" id="tab-btn-1" onclick="switchTab(1)">問1 (基礎クラス)</li>
+ <li class="tab" id="tab-btn-2" onclick="switchTab(2)">問2 (継承・Ovr)</li>
+ <li class="tab" id="tab-btn-3" onclick="switchTab(3)">問3 (多態性)</li>
+ <li class="tab" id="tab-btn-4" onclick="switchTab(4)">問4 (再帰関数)</li>
+ <li class="tab" id="tab-btn-5" onclick="switchTab(5)">問5 (副作用)</li>
+ <li class="tab" id="tab-btn-6" onclick="switchTab(6)">問6 (リスト構造)</li>
+ </ul>
+
+ <div class="content-area">
+ 
+ <!-- 問1のエリア -->
+ <div class="tab-content active" id="content-1">
+ <div class="sticky-timer-container" id="timer-1">06:00.000</div>
+ <button class="start-btn" id="start-btn-1" onclick="startTimer(1, 360)">タイマー開始</button>
+ <div class="question-body" id="q-body-1">
+<!--
+【内部トレース領域】（※ブラウザには表示されない）
+出題形式：トレース型（パターンb）
+初期状態：VehicleインスタンスがCargo配列を保持。
+Cargo1(target=10, actual=10)
+Cargo2(target=15, actual=17)
+Cargo3(target=8, actual=12)
+ループ1回目：Cargo1。actual(10) > target(10)はfalse。ペナルティ加算なし。totalPenalty = 0。
+ループ2回目：Cargo2。actual(17) > target(15)はtrue。超過=2。ペナルティ=2*500=1000。totalPenalty = 1000。
+ループ3回目：Cargo3。actual(12) > target(8)はtrue。超過=4。ペナルティ=4*500=2000。totalPenalty = 1000+2000=3000。
+最終結果：3000
+ダミー生成：
+1ズレ（全て超過判定）=1000
+参照先間違い（超過していないものを足す等）=0
+メソッド呼び出し間違い・単価ミス=1500
+-->
+ <h2>問1：クラスの基礎とインスタンス化</h2>
+ <div class="text-content scroll-force">
+ <p>株式会社バンガード・ロジスティクスは、国内全域のサプライチェーンを牽引する総合物流企業であり、昨今の厳格なサービスレベルアグリーメント（SLA）の遵守を徹底するため、新たな配送時間監査システム「V-Track」の要件定義を行っている。このシステムの中核となるのが、各営業所に配備された配送車両の遅延状況を集約し、損害賠償額の引当金を自動計算するモジュールである。</p>
+ <p>本モジュールにおいて、各積荷を表す <code>Cargo</code> クラスは、荷主との契約によって厳密に定められた規定配送時間（<code>targetHours</code>: 整数型）と、GPSトラッキングから算出された実際の配送時間（<code>actualHours</code>: 整数型）を内部状態として保持する。一方、配送車両を表す <code>Vehicle</code> クラスは、自身が積み込んだ複数の <code>Cargo</code> インスタンスを配列 <code>cargos</code> としてカプセル化して保持する設計となっている。</p>
+ <p>監査規定によれば、<code>Vehicle</code> クラスの集約メソッド <code>calcTotalDelayPenalty</code> は、自身の持つすべての <code>Cargo</code> をループ走査し、<code>actualHours</code> が <code>targetHours</code> を超過している積荷を発見した場合、その「超過した時間（1時間単位）」に対し、一律で法定違約金レートである500円を乗じてペナルティ額を算出し、車両全体の総遅延損害金として合算・返却しなければならない。</p>
+ </div>
+ <div class="state-list-area">
+ <ul>
+ <li><strong>cargos[1]：</strong> targetHours = 10, actualHours = 10</li>
+ <li><strong>cargos[2]：</strong> targetHours = 15, actualHours = 17</li>
+ <li><strong>cargos[3]：</strong> targetHours = 8, actualHours = 12</li>
+ </ul>
+ </div>
+ <div class="code-block">
+クラス Cargo
+  private:
+    整数型: targetHours
+    整数型: actualHours
+  
+  public:
+    Cargo(整数型: initTarget, 整数型: initActual)
+      targetHours ← initTarget
+      actualHours ← initActual
+    
+    getTargetHours(): 整数型
+      return targetHours
+      
+    getActualHours(): 整数型
+      return actualHours
+
+クラス Vehicle
+  private:
+    Cargoの配列: cargos
+  
+  public:
+    Vehicle(Cargoの配列: initCargos)
+      cargos ← initCargos
+      
+    calcTotalDelayPenalty(): 整数型
+      整数型: totalPenalty ← 0
+      整数型: i
+      整数型: excess
+      
+      for (i を 1 から cargosの要素数 まで 1 ずつ増やす)
+        if (cargos[i].getActualHours() ＞ cargos[i].getTargetHours())
+          excess ← cargos[i].getActualHours() - cargos[i].getTargetHours()
+          totalPenalty ← totalPenalty + (excess × 500)
+        endif
+      endfor
+      
+      return totalPenalty
+ </div>
+ <h3>設問</h3>
+ <p>上記の <code>Cargo</code> インスタンス3つを要素として持つ配列を引数にして <code>Vehicle</code> クラスのインスタンスを生成した。この <code>Vehicle</code> インスタンスに対して <code>calcTotalDelayPenalty()</code> メソッドを呼び出したとき、メソッドの戻り値として正しいものはどれか。</p>
+ <ul class="options-list">
+ <li><strong>ア：</strong> 0</li>
+ <li><strong>イ：</strong> 500</li>
+ <li><strong>ウ：</strong> 1000</li>
+ <li><strong>エ：</strong> 1500</li>
+ <li><strong>オ：</strong> 2000</li>
+ <li><strong>カ：</strong> 2500</li>
+ <li><strong>キ：</strong> 3000</li>
+ <li><strong>ク：</strong> 3500</li>
+ </ul>
+ <button class="ans-btn" id="ans-btn-1" onclick="showAnswer(1)">答えと解説を見る</button>
+ <div class="answer-block" id="ans-block-1">
+ <h3>正解：キ</h3>
+ <div class="trace-box">
+ <p>メソッド <code>calcTotalDelayPenalty()</code> のループ実行のトレースは以下の通りである。</p>
+ <p>【初期状態】totalPenalty = 0<br>
+ 【1回目のループ (i = 1)】<br>
+ cargos[1] の getActualHours() は 10、getTargetHours() は 10。<br>
+ `10 ＞ 10` は false となるため、if文の中身は実行されない。totalPenalty = 0。<br>
+ 【2回目のループ (i = 2)】<br>
+ cargos[2] の getActualHours() は 17、getTargetHours() は 15。<br>
+ `17 ＞ 15` は true となるため、if文が実行される。<br>
+ excess ← 17 - 15 = 2。<br>
+ totalPenalty ← 0 + (2 × 500) = 1000。<br>
+ 【3回目のループ (i = 3)】<br>
+ cargos[3] の getActualHours() は 12、getTargetHours() は 8。<br>
+ `12 ＞ 8` は true となるため、if文が実行される。<br>
+ excess ← 12 - 8 = 4。<br>
+ totalPenalty ← 1000 + (4 × 500) = 1000 + 2000 = 3000。</p>
+ <p>すべての走査が終了し、戻り値は 3000 となる。したがって正解は「キ」である。</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- 問2のエリア -->
+ <div class="tab-content" id="content-2">
+ <div class="sticky-timer-container" id="timer-2">07:00.000</div>
+ <button class="start-btn" id="start-btn-2" onclick="startTimer(2, 420)">タイマー開始</button>
+ <div class="question-body" id="q-body-2">
+<!--
+【内部トレース領域】（※ブラウザには表示されない）
+出題形式：穴埋め型（パターンa）
+初期状態：BaseServer を継承した SecureServer のインスタンス化。
+（※穴埋め型の場合、まずは空欄に正解を入れた完全な状態でトレースを行い、論理破綻がないか確認）
+正解の構文：return super.calcMonthlyFee() + (cryptoKeyCount × 1000)
+トレース：
+BaseServerは baseRate(基本単価) × activeDays(稼働日数) で基本利用料を返す。
+SecureServerは追加で cryptoKeyCount(暗号キー数) を持ち、これに1000を掛けた値を親の計算結果に加算する。
+親メソッドの呼び出しは、擬似言語仕様により super.calcMonthlyFee() を用いる。
+最終結果 または 空欄の正解：super.calcMonthlyFee() + (cryptoKeyCount × 1000)
+ダミー生成：
+ア: 自身の再帰的呼び出し（this.calcMonthlyFee）
+イ: 親のメンバへの直接アクセス誤認（super.baseRate）
+ウ: superキーワード単体での関数呼び出し（super()）等
+-->
+ <h2>問2：継承とオーバーライド</h2>
+ <div class="text-content">
+ <p>株式会社セキュアクラウド統括部門では、次世代のIaaS環境において各テナントに割り当てられるサーバーの月額利用料を算出する課金クラス群を再設計している。基本となる <code>BaseServer</code> クラスは、インスタンス変数として <code>baseRate</code> (1日あたりの基本単価) と <code>activeDays</code> (当月の稼働日数) をカプセル化して持ち、これらを乗算して基本利用料を算出する <code>calcMonthlyFee</code> メソッドを備えている。</p>
+ <p>今回、国家機密レベルの通信を取り扱う顧客向けに、新たに暗号化処理用ハードウェアモジュールを搭載した <code>SecureServer</code> クラスを、<code>BaseServer</code> クラスを継承して定義することとなった。<code>SecureServer</code> は独自の追加インスタンス変数として <code>cryptoKeyCount</code> (払い出された暗号キーの数) を保持する。</p>
+ <p>課金仕様書によれば、<code>SecureServer</code> の <code>calcMonthlyFee</code> メソッドはオーバーライドされ、「親クラスが本来算出する基本利用料」に対し、「<code>cryptoKeyCount</code> に1000円を乗じたセキュリティ加算額」を合算した金額を返さなければならない。カプセル化の原則に従い、親クラスの private 変数には直接アクセスせず、適切なメソッド呼び出しを行う必要がある。</p>
+ </div>
+ <div class="code-block">
+クラス BaseServer
+  private:
+    整数型: baseRate
+    整数型: activeDays
+    
+  public:
+    BaseServer(整数型: initRate, 整数型: initDays)
+      baseRate ← initRate
+      activeDays ← initDays
+      
+    calcMonthlyFee(): 整数型
+      return baseRate × activeDays
+
+クラス SecureServer extends BaseServer
+  private:
+    整数型: cryptoKeyCount
+    
+  public:
+    SecureServer(整数型: initRate, 整数型: initDays, 整数型: initKeys)
+      super(initRate, initDays) /* 親クラスのコンストラクタ呼び出し */
+      cryptoKeyCount ← initKeys
+      
+    calcMonthlyFee(): 整数型
+      /* 親クラスの基本利用料に、暗号キー数×1000を加算して返す */
+      return [        a        ]
+ </div>
+ <h3>設問</h3>
+ <p>プログラム中の空欄 [ a ] に入る最も適切な処理はどれか。</p>
+ <ul class="options-list">
+ <li><strong>ア：</strong> this.calcMonthlyFee() + (cryptoKeyCount × 1000)</li>
+ <li><strong>イ：</strong> BaseServer.calcMonthlyFee() + (cryptoKeyCount × 1000)</li>
+ <li><strong>ウ：</strong> super.baseRate × activeDays + (cryptoKeyCount × 1000)</li>
+ <li><strong>エ：</strong> super.calcMonthlyFee() + (cryptoKeyCount × 1000)</li>
+ <li><strong>オ：</strong> calcMonthlyFee() + (cryptoKeyCount × 1000)</li>
+ <li><strong>カ：</strong> super() + (cryptoKeyCount × 1000)</li>
+ <li><strong>キ：</strong> super.calcMonthlyFee + (cryptoKeyCount × 1000)</li>
+ <li><strong>ク：</strong> baseRate × activeDays + cryptoKeyCount × 1000</li>
+ </ul>
+ <button class="ans-btn" id="ans-btn-2" onclick="showAnswer(2)">答えと解説を見る</button>
+ <div class="answer-block" id="ans-block-2">
+ <h3>正解：エ</h3>
+ <div class="trace-box">
+ <p>この問題は継承における親クラスのメソッド呼び出し構文とカプセル化の理解を問うものである。</p>
+ <p><code>SecureServer</code> は <code>BaseServer</code> を継承（extends）している。<code>SecureServer</code> 内でオーバーライドされた <code>calcMonthlyFee</code> メソッドから、親クラスの元々の <code>calcMonthlyFee</code> を呼び出すには <code>super.calcMonthlyFee()</code> を使用しなければならない。</p>
+ <p>「ア」や「オ」は自身の <code>calcMonthlyFee</code> を再帰的に呼び出すことになり、無限ループ（スタックオーバーフロー）を引き起こす。「イ」は静的メソッド（クラスメソッド）の呼び出し構文であり不適切。「ウ」や「ク」は親クラスの <code>baseRate</code> や <code>activeDays</code> が <code>private</code> で宣言されているため、子クラスから直接アクセスできずコンパイルエラーとなる。「カ」の <code>super()</code> は親クラスのコンストラクタ呼び出しに限定される。「キ」は括弧がないためメソッド呼び出しにならない。</p>
+ <p>したがって、正しく親メソッドを実行して加算額を足し合わせる「エ」が正解となる。</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- 問3のエリア -->
+ <div class="tab-content" id="content-3">
+ <div class="sticky-timer-container" id="timer-3">07:00.000</div>
+ <button class="start-btn" id="start-btn-3" onclick="startTimer(3, 420)">タイマー開始</button>
+ <div class="question-body" id="q-body-3">
+<!--
+【内部トレース領域】（※ブラウザには表示されない）
+出題形式：トレース型（パターンb）
+初期状態：配列に3つのPaymentMethod。
+plan1: StandardPlan(points=100), claimAmount=3000
+plan2: ExecutivePlan(points=50), claimAmount=4000
+plan3: StandardPlan(points=200), claimAmount=1500
+ループ（多態性による一括処理）：
+plan1(Standard): points ← 100 + (3000 * 0.1) = 100 + 300 = 400
+plan2(Executive): points ← 50 + (4000 * 0.2) + 500 = 50 + 800 + 500 = 1350
+plan3(Standard): points ← 200 + (1500 * 0.1) = 200 + 150 = 350
+合計ポイント算出（calcAllPoints）：400 + 1350 + 350 = 2100
+最終結果：2100
+ダミー生成：Executiveの固定ボーナス忘れ = 2100-500 = 1600。
+Executiveの計算式適用忘れ = 1300。
+全てStandardの計算 = 1600。
+初期ポイント加算忘れ = 300+1300+150 = 1750。
+-->
+ <h2>問3：多態性（ポリモーフィズム）</h2>
+ <div class="text-content">
+ <p>多国籍IT企業のグローバル人事部では、全従業員向けに新たな福利厚生プラットフォーム「Benefit-Core」を導入した。このシステムでは、各従業員が申請した経費（経費精算額）に応じて、社内ポイント（RewardPoints）を還元する処理を実行する。システムは共通インタフェース <code>BenefitPlan</code> を定義しており、このインタフェースは <code>processClaim(整数型: amount)</code> メソッドおよび <code>getPoints()</code> メソッドの契約を強制する。</p>
+ <p>一般社員向けの <code>StandardPlan</code> クラスは、申請額の10%（端数切り捨て）を現在の <code>points</code> に加算する。一方で、上級管理職向けに発行される <code>ExecutivePlan</code> クラスは、申請額の20%（端数切り捨て）を算出した後、さらに固定の特別ボーナスとして500ポイントを上乗せして <code>points</code> に加算する極めて優遇された仕様となっている。どちらのクラスも <code>BenefitPlan</code> インタフェースを実装しており、呼び出し側はオブジェクトの実際の型を意識することなく、ポリモーフィズムを利用して一括で処理を委譲できる。</p>
+ <p>システム管理者オブジェクトは、従業員が保有する複数のプラン（<code>BenefitPlan</code> の配列）と、それぞれの申請額（配列）を受け取り、ループ処理によってすべての申請を一斉に確定させたのち、全プランの最終的な合計ポイントを算出して返す <code>calcAllPoints</code> メソッドを実行する。</p>
+ </div>
+ <div class="code-block">
+インタフェース BenefitPlan
+  public:
+    processClaim(整数型: amount)
+    getPoints(): 整数型
+
+クラス StandardPlan implements BenefitPlan
+  private:
+    整数型: points
+    
+  public:
+    StandardPlan(整数型: initPoints)
+      points ← initPoints
+      
+    processClaim(整数型: amount)
+      points ← points + (amount ÷ 10 の商)
+      
+    getPoints(): 整数型
+      return points
+
+クラス ExecutivePlan implements BenefitPlan
+  private:
+    整数型: points
+    
+  public:
+    ExecutivePlan(整数型: initPoints)
+      points ← initPoints
+      
+    processClaim(整数型: amount)
+      points ← points + (amount ÷ 5 の商) + 500
+      
+    getPoints(): 整数型
+      return points
+
+/* 実行クラスの処理抜粋 */
+calcAllPoints(BenefitPlanの配列: plans, 整数型配列: claimAmounts): 整数型
+  整数型: total ← 0
+  整数型: i
+  
+  for (i を 1 から plansの要素数 まで 1 ずつ増やす)
+    plans[i].processClaim(claimAmounts[i])
+    total ← total + plans[i].getPoints()
+  endfor
+  
+  return total
+ </div>
+ <h3>設問</h3>
+ <p>以下のインスタンスと引数で <code>calcAllPoints</code> メソッドを呼び出した時、戻り値として返される値はどれか。</p>
+ <p><code>plans</code> = [new StandardPlan(100), new ExecutivePlan(50), new StandardPlan(200)]<br>
+ <code>claimAmounts</code> = [3000, 4000, 1500]</p>
+ <ul class="options-list">
+ <li><strong>ア：</strong> 1200</li>
+ <li><strong>イ：</strong> 1600</li>
+ <li><strong>ウ：</strong> 1750</li>
+ <li><strong>エ：</strong> 1850</li>
+ <li><strong>オ：</strong> 2000</li>
+ <li><strong>カ：</strong> 2100</li>
+ <li><strong>キ：</strong> 2400</li>
+ <li><strong>ク：</strong> 2650</li>
+ </ul>
+ <button class="ans-btn" id="ans-btn-3" onclick="showAnswer(3)">答えと解説を見る</button>
+ <div class="answer-block" id="ans-block-3">
+ <h3>正解：カ</h3>
+ <div class="trace-box">
+ <p>ポリモーフィズムにより、<code>plans[i].processClaim()</code> は各インスタンスの実体（クラス）に定義されたメソッドを動的に呼び出す。</p>
+ <p>【ループ1回目：i = 1】<br>
+ 対象：StandardPlan (初期points = 100), amount = 3000<br>
+ 処理：points ← 100 + (3000 ÷ 10) = 100 + 300 = 400<br>
+ total ← 0 + 400 = 400</p>
+ <p>【ループ2回目：i = 2】<br>
+ 対象：ExecutivePlan (初期points = 50), amount = 4000<br>
+ 処理：points ← 50 + (4000 ÷ 5) + 500 = 50 + 800 + 500 = 1350<br>
+ total ← 400 + 1350 = 1750</p>
+ <p>【ループ3回目：i = 3】<br>
+ 対象：StandardPlan (初期points = 200), amount = 1500<br>
+ 処理：points ← 200 + (1500 ÷ 10) = 200 + 150 = 350<br>
+ total ← 1750 + 350 = 2100</p>
+ <p>すべての処理が完了し、最終的な total の値は 2100 となる。したがって正解は「カ」。</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- 問4のエリア -->
+ <div class="tab-content" id="content-4">
+ <div class="sticky-timer-container" id="timer-4">08:00.000</div>
+ <button class="start-btn" id="start-btn-4" onclick="startTimer(4, 480)">タイマー開始</button>
+ <div class="question-body" id="q-body-4">
+<!--
+【内部トレース領域】（※ブラウザには表示されない）
+出題形式：トレース型（パターンb）
+初期状態：
+RootNode (direct=10, children=[NodeA, NodeB])
+NodeA (direct=5, children=[NodeA1, NodeA2])
+  NodeA1 (direct=0, children=[])
+  NodeA2 (direct=8, children=[])
+NodeB (direct=20, children=[NodeB1])
+  NodeB1 (direct=12, children=[NodeB1_1])
+    NodeB1_1 (direct=5, children=[])
+再帰トレース：calcTotalInventory(Root)
+Rootの計算: 10 + calc(NodeA) + calc(NodeB)
+  calc(NodeA): 5 + calc(NodeA1) + calc(NodeA2)
+    calc(NodeA1): 0 + (子なし) -> return 0
+    calc(NodeA2): 8 + (子なし) -> return 8
+  NodeAの戻り値 = 5 + 0 + 8 = 13
+  calc(NodeB): 20 + calc(NodeB1)
+    calc(NodeB1): 12 + calc(NodeB1_1)
+      calc(NodeB1_1): 5 + (子なし) -> return 5
+    NodeB1の戻り値 = 12 + 5 = 17
+  NodeBの戻り値 = 20 + 17 = 37
+Rootの戻り値 = 10 + 13 + 37 = 60
+最終結果：60
+ダミー生成：directを含めない=0、末端ノードのみ足す=0+8+5=13、一部の階層見落とし
+-->
+ <h2>問4：再帰関数</h2>
+ <div class="text-content">
+ <p>巨大な物流倉庫群の全容を管理するWMS（倉庫管理システム）において、再帰関数を用いた総在庫数の算出モジュールが稼働している。この倉庫はマトリックス状の複雑な階層構造を形成しており、論理的な保管単位は <code>StorageNode</code> クラスとして定義されている。</p>
+ <p>各 <code>StorageNode</code> インスタンスは、その保管区画（ノード）自身に直置きされている品物の数（<code>directItems</code>）を持つと同時に、内部にさらに細分化された子区画群を保持するための配列（<code>childNodes</code>: <code>StorageNode</code> の配列）をカプセル化している。システム仕様上、在庫集計を行う再帰関数 <code>calcTotalInventory</code> は、引数として渡された <code>StorageNode</code> の直置き品目数に加えて、すべての <code>childNodes</code> に対する同関数の戻り値を再帰的に合算し、ツリー全体の総アイテム数を返すよう実装されている。</p>
+ <p>監査担当者は、特定の区画群に対してこの集計ロジックを手動でトレースし、論理破綻がないか検証するよう指示を出した。深層までネストされたインスタンス群に対し、正しく再帰呼び出しが行われた場合の最終的な総数を導き出せ。</p>
+ </div>
+ <div class="code-block">
+クラス StorageNode
+  private:
+    整数型: directItems
+    StorageNodeの配列: childNodes
+    
+  public:
+    StorageNode(整数型: initItems, StorageNodeの配列: initChildren)
+      directItems ← initItems
+      childNodes ← initChildren
+      
+    getDirectItems(): 整数型
+      return directItems
+      
+    getChildNodes(): StorageNodeの配列
+      return childNodes
+
+整数型: calcTotalInventory(StorageNode: node)
+  整数型: total ← node.getDirectItems()
+  StorageNodeの配列: children ← node.getChildNodes()
+  整数型: i
+  
+  if (childrenの要素数 ＞ 0)
+    for (i を 1 から childrenの要素数 まで 1 ずつ増やす)
+      /* 子ノードの在庫数を再帰的に取得して加算 */
+      total ← total + calcTotalInventory(children[i])
+    endfor
+  endif
+  
+  return total
+ </div>
+ <h3>設問</h3>
+ <p>以下のツリー構造を持つ <code>rootNode</code> を引数として <code>calcTotalInventory(rootNode)</code> を呼び出した場合、戻り値はどれか。<br>※ <code>[ ]</code> は空の配列を意味する。</p>
+ <pre style="background:#eee; padding:10px; margin-bottom:15px; border:1px solid #ccc;">
+NodeA1 = new StorageNode(0, [])
+NodeA2 = new StorageNode(8, [])
+NodeA = new StorageNode(5, [NodeA1, NodeA2])
+
+NodeB1_1 = new StorageNode(5, [])
+NodeB1 = new StorageNode(12, [NodeB1_1])
+NodeB = new StorageNode(20, [NodeB1])
+
+rootNode = new StorageNode(10, [NodeA, NodeB])</pre>
+ <ul class="options-list">
+ <li><strong>ア：</strong> 13</li>
+ <li><strong>イ：</strong> 33</li>
+ <li><strong>ウ：</strong> 42</li>
+ <li><strong>エ：</strong> 50</li>
+ <li><strong>オ：</strong> 55</li>
+ <li><strong>カ：</strong> 60</li>
+ <li><strong>キ：</strong> 65</li>
+ <li><strong>ク：</strong> 70</li>
+ </ul>
+ <button class="ans-btn" id="ans-btn-4" onclick="showAnswer(4)">答えと解説を見る</button>
+ <div class="answer-block" id="ans-block-4">
+ <h3>正解：カ</h3>
+ <div class="trace-box">
+ <p>再帰関数 <code>calcTotalInventory</code> は、親ノードの <code>directItems</code> と、すべての子ノードの <code>calcTotalInventory</code> の結果を足し合わせる。</p>
+ <p>最下層からトレースして結果を合算する。<br>
+ 【NodeA系の評価】<br>
+ calcTotalInventory(NodeA1) = 0 (子なし)<br>
+ calcTotalInventory(NodeA2) = 8 (子なし)<br>
+ calcTotalInventory(NodeA) = 5(自身のdirect) + 0(NodeA1の結果) + 8(NodeA2の結果) = 13</p>
+ <p>【NodeB系の評価】<br>
+ calcTotalInventory(NodeB1_1) = 5 (子なし)<br>
+ calcTotalInventory(NodeB1) = 12(自身のdirect) + 5(NodeB1_1の結果) = 17<br>
+ calcTotalInventory(NodeB) = 20(自身のdirect) + 17(NodeB1の結果) = 37</p>
+ <p>【Rootの評価】<br>
+ calcTotalInventory(rootNode) = 10(自身のdirect) + 13(NodeAの結果) + 37(NodeBの結果) = 60</p>
+ <p>再帰呼び出しがすべて完了した時点での最終的な戻り値は 60 となる。正解は「カ」。</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- 問5のエリア -->
+ <div class="tab-content" id="content-5">
+ <div class="sticky-timer-container" id="timer-5">08:00.000</div>
+ <button class="start-btn" id="start-btn-5" onclick="startTimer(5, 480)">タイマー開始</button>
+ <div class="question-body" id="q-body-5">
+<!--
+【内部トレース領域】（※ブラウザには表示されない）
+出題形式：トレース型（パターンa）
+初期状態：
+sharedStock = new Stock(1000)
+agent1 = new Agent(sharedStock)
+agent2 = new Agent(sharedStock)
+agent3 = new Agent(sharedStock)
+トレース：
+agent1.executeBuy(400)
+  sharedStock.getRemainingShares() = 1000。400以上なのでtrue。
+  sharedStock.remainingShares = 1000 - 400 = 600
+  agent1.purchasedShares = 0 + 400 = 400
+  戻り値 true
+agent2.executeBuy(700)
+  sharedStock.getRemainingShares() = 600。700以上ではないのでfalse。
+  sharedStock.remainingShares は 600 のまま。
+  agent2.purchasedShares は 0 のまま。
+  戻り値 false
+agent3.executeBuy(500)
+  sharedStock.getRemainingShares() = 600。500以上なのでtrue。
+  sharedStock.remainingShares = 600 - 500 = 100
+  agent3.purchasedShares = 0 + 500 = 500
+  戻り値 true
+最終結果 または 空欄の正解：Stockの残数=100, agent2の購入数=0
+ダミー生成：
+ア: (100, 0)
+イ: (100, 700)
+ウ: (600, 0)
+エ: (0, 0)
+オ: (500, 0)
+カ: (100, 600)
+キ: (600, 700)
+ク: (0, 700)
+-->
+ <h2>問5：オブジェクトの参照渡しによる副作用</h2>
+ <div class="text-content">
+ <p>超高速アルゴリズムトレードをエミュレートする株式取引シミュレーションシステムにおいて、並行稼働する複数の取引エージェント（<code>Agent</code>）が、メモリ上の単一の共有リソースである銘柄インスタンス（<code>Stock</code>）の参照を保持し、先着順で買い注文を処理している。</p>
+ <p>システム設計上、<code>Stock</code> クラスは市場に流通している発行済残株数（<code>remainingShares</code>）を中央管理している。各 <code>Agent</code> はコンストラクタで渡された <code>Stock</code> のインスタンスを自身のメンバ変数 <code>targetStock</code> に代入することで、全員が「全く同じ実体」を指し示すエイリアス（別名参照）状態を形成している。</p>
+ <p><code>Agent</code> クラスの <code>executeBuy(整数型: orderVolume)</code> メソッドは、自身の購入済み株数（<code>purchasedShares</code>）に株を追加する際、まず共有されている <code>Stock</code> 側の残株数が注文数以上あるかを確認する。十分な残数があれば、参照元である <code>Stock</code> の残数を減算し、自身の <code>purchasedShares</code> に注文数を加算して <code>true</code> を返す。もし残数が不足していれば、部分的な買い付けは行わずに <code>false</code> を返し終了する。</p>
+ <p>このシビアなリソース競合環境において、特定の順序で注文が発火した際に引き起こされる状態変化（副作用）を追跡せよ。</p>
+ </div>
+ <div class="code-block">
+クラス Stock
+  public:
+    整数型: remainingShares
+    
+  public:
+    Stock(整数型: initShares)
+      remainingShares ← initShares
+      
+    getRemainingShares(): 整数型
+      return remainingShares
+      
+    reduceShares(整数型: amount)
+      remainingShares ← remainingShares - amount
+
+クラス Agent
+  private:
+    Stock: targetStock
+    整数型: purchasedShares ← 0
+    
+  public:
+    Agent(Stock: stockRef)
+      targetStock ← stockRef
+      
+    executeBuy(整数型: orderVolume): 論理型
+      if (targetStock.getRemainingShares() ≧ orderVolume)
+        /* 共有リソースの株数を減らす（副作用が発生） */
+        targetStock.reduceShares(orderVolume)
+        purchasedShares ← purchasedShares + orderVolume
+        return true
+      else
+        return false
+      endif
+      
+    getPurchasedShares(): 整数型
+      return purchasedShares
+ </div>
+ <h3>設問</h3>
+ <p>以下の一連の処理が順次実行された直後において、<code>sharedStock</code> の <code>remainingShares</code> の値と、<code>agent2</code> の <code>getPurchasedShares()</code> の戻り値の組み合わせとして正しいものはどれか。</p>
+ <pre style="background:#eee; padding:10px; margin-bottom:15px; border:1px solid #ccc;">
+Stock: sharedStock ← new Stock(1000)
+Agent: agent1 ← new Agent(sharedStock)
+Agent: agent2 ← new Agent(sharedStock)
+Agent: agent3 ← new Agent(sharedStock)
+
+agent1.executeBuy(400)
+agent2.executeBuy(700)
+agent3.executeBuy(500)</pre>
+ <ul class="options-list">
+ <li><strong>ア：</strong> (100, 0)</li>
+ <li><strong>イ：</strong> (100, 700)</li>
+ <li><strong>ウ：</strong> (600, 0)</li>
+ <li><strong>エ：</strong> (0, 0)</li>
+ <li><strong>オ：</strong> (500, 0)</li>
+ <li><strong>カ：</strong> (100, 600)</li>
+ <li><strong>キ：</strong> (600, 700)</li>
+ <li><strong>ク：</strong> (0, 700)</li>
+ </ul>
+ <button class="ans-btn" id="ans-btn-5" onclick="showAnswer(5)">答えと解説を見る</button>
+ <div class="answer-block" id="ans-block-5">
+ <h3>正解：ア</h3>
+ <div class="trace-box">
+ <p>すべての <code>Agent</code> インスタンスが単一の <code>Stock</code> インスタンス (<code>sharedStock</code>) を参照渡しで共有しているため、1つのエージェントの操作が他のエージェントの判定に直ちに影響を及ぼす（副作用）。</p>
+ <p>【初期状態】<br>
+ sharedStock の remainingShares = 1000<br>
+ 全Agent の purchasedShares = 0</p>
+ <p>【agent1.executeBuy(400) の実行】<br>
+ remainingShares(1000) ≧ 400 は true。<br>
+ sharedStock の remainingShares は 1000 - 400 = 600 になる。<br>
+ agent1 の purchasedShares は 400 になる。</p>
+ <p>【agent2.executeBuy(700) の実行】<br>
+ remainingShares(600) ≧ 700 は false。条件を満たさず false が返る。<br>
+ sharedStock の残数は 600 のまま。<br>
+ agent2 の purchasedShares は 0 のままである。</p>
+ <p>【agent3.executeBuy(500) の実行】<br>
+ remainingShares(600) ≧ 500 は true。<br>
+ sharedStock の remainingShares は 600 - 500 = 100 になる。<br>
+ agent3 の purchasedShares は 500 になる。</p>
+ <p>最終的に <code>sharedStock</code> の <code>remainingShares</code> は 100、<code>agent2</code> の購入数は 0 であるため、組み合わせは (100, 0) となる。したがって正解は「ア」。</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- 問6のエリア -->
+ <div class="tab-content" id="content-6">
+ <div class="sticky-timer-container" id="timer-6">08:00.000</div>
+ <button class="start-btn" id="start-btn-6" onclick="startTimer(6, 480)">タイマー開始</button>
+ <div class="question-body" id="q-body-6">
+<!--
+【内部トレース領域】（※ブラウザには表示されない）
+出題形式：穴埋め型（パターンb）
+初期状態：
+キューとして機能するパケット配列 packetQueue と、ポインタ head, tail。
+エラーレートが高いパケットはキューの末尾に回す（巡回キュー的な動作）。
+正解の構文：
+tail ← tail + 1
+packetQueue[tail] ← currentPacket
+トレース：
+エラーレートが threshold より大きい場合、再度配列の最後尾に配置する必要がある。
+最後尾は常に tail 変数が指し示すインデックスであるため、まず tail を 1 増やし、
+その新しいインデックスに対して currentPacket を代入する。
+最終結果 または 空欄の正解：tail ← tail + 1, packetQueue[tail] ← currentPacket
+ダミー生成：
+tail ← tail - 1（逆走）
+packetQueue[head] ← currentPacket（先頭に戻してしまう）
+インデックス操作と代入の順序間違い。
+-->
+ <h2>問6：リスト構造とオブジェクト操作の応用</h2>
+ <div class="text-content">
+ <p>次世代ネットワーク機器のトラフィック制御機構において、受信したデータパケット（<code>Packet</code> クラス）の処理キューを巡回・フィルタリングする高度なアルゴリズムを実装している。このルーターは、ノイズが混入したパケットを即座に破棄せず、後続のリカバリプロセスで復元を試みるためのフォールトトレラント設計を採用している。</p>
+ <p>手続 <code>processPacketQueue</code> は、パケットの配列である <code>packetQueue</code> と、配列内の有効な先頭要素を示すポインタ <code>head</code>、および有効な末尾要素を示すポインタ <code>tail</code> を引数に取る。処理ループ内では、キューの先頭からパケットを一つ取り出し（デキュー操作）、そのパケットの <code>errorRate</code> (エラー率) が規定値 <code>threshold</code> 以下であれば正常として <code>routePacket</code> に渡し転送する。</p>
+ <p>しかし、<code>errorRate</code> が規定値を超えていた場合、そのパケットは転送されず、再送待機用として「現在のキューの最後尾に再度追加」されなければならない（巡回処理）。この再配置ロジックにおいて、キューの末尾ポインタを正しくインクリメントし、配列の最後尾にオブジェクトの参照を格納する操作が求められる。なお、配列のインデックスは1から始まり、配列の容量は無限に拡張可能であると仮定する。</p>
+ </div>
+ <div class="code-block">
+手続: processPacketQueue(Packetの配列: packetQueue, 整数型: head, 整数型: tail, 整数型: threshold)
+  Packet: currentPacket
+  
+  while (head ≦ tail)
+    /* 先頭からパケットを取り出す */
+    currentPacket ← packetQueue[head]
+    head ← head + 1
+    
+    if (currentPacket.getErrorRate() ≦ threshold)
+      /* 正常パケットはルーティング処理へ */
+      routePacket(currentPacket)
+    else
+      /* エラーパケットを配列の最後尾に追加して巡回させる */
+      [                a                ]
+    endif
+  endwhile
+ </div>
+ <h3>設問</h3>
+ <p>プログラム中の空欄 [ a ] に入る最も適切な処理を選択せよ。処理は複数行にわたる場合がある。</p>
+ <ul class="options-list">
+ <li><strong>ア：</strong> <br>tail ← tail + 1<br>packetQueue[tail] ← currentPacket</li>
+ <li><strong>イ：</strong> <br>packetQueue[head] ← currentPacket<br>head ← head + 1</li>
+ <li><strong>ウ：</strong> <br>tail ← tail - 1<br>packetQueue[tail] ← currentPacket</li>
+ <li><strong>エ：</strong> <br>packetQueue[tail + 1] ← currentPacket<br>head ← tail</li>
+ <li><strong>オ：</strong> <br>currentPacket ← packetQueue[tail]<br>tail ← tail + 1</li>
+ <li><strong>カ：</strong> <br>packetQueue[tail] ← currentPacket<br>tail ← tail - 1</li>
+ <li><strong>キ：</strong> <br>head ← head + 1<br>packetQueue[tail] ← currentPacket</li>
+ <li><strong>ク：</strong> <br>packetQueue[1] ← currentPacket<br>tail ← tail + 1</li>
+ </ul>
+ <button class="ans-btn" id="ans-btn-6" onclick="showAnswer(6)">答えと解説を見る</button>
+ <div class="answer-block" id="ans-block-6">
+ <h3>正解：ア</h3>
+ <div class="trace-box">
+ <p>キュー（待ち行列）から取り出した要素を再度キューの末尾（最後尾）に追加するエンキュー処理の基本ロジックである。</p>
+ <p>変数 <code>tail</code> は現在の配列における「有効なデータの末尾インデックス」を指している。<br>
+ 新たな要素を末尾に追加するためには、まず末尾ポインタ <code>tail</code> の値を 1 つ増やして（インクリメント）拡張し、その新しい <code>tail</code> の位置が示す配列要素 <code>packetQueue[tail]</code> に対して対象の <code>currentPacket</code> を代入しなければならない。</p>
+ <p>「イ」は先頭側に上書きしてしまっているため巡回にならない。「ウ」や「カ」はポインタを減算しており、既存のデータを破壊してしまう。「エ」は代入までは良いが、先頭ポインタ <code>head</code> を末尾にジャンプさせてしまうためループが即座に崩壊する。「オ」は代入の向きが逆（配列から変数へ）である。</p>
+ <p>したがって、正しい順序で末尾への追加操作を行っている「ア」が正解となる。</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ </div>
+</div>
+
+<script>
+ const durations = {
+ 1: 360,
+ 2: 420,
+ 3: 420,
+ 4: 480,
+ 5: 480,
+ 6: 480
+ };
+ 
+ let timerIntervals = {};
+ let startTimes = {};
+ let endTimes = {};
+
+ window.onload = function() {
+ for (let i = 1; i <= 6; i++) {
+ let timerEl = document.getElementById('timer-' + i);
+ if(timerEl) {
+ let totalSec = durations[i];
+ let m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+ let s = (totalSec % 60).toString().padStart(2, '0');
+ timerEl.innerText = `${m}:${s}.000`;
+ }
+ }
+ };
+
+ function switchTab(id) {
+ document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+ document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+ document.getElementById('tab-btn-' + id).classList.add('active');
+ document.getElementById('content-' + id).classList.add('active');
+ }
+
+ function startTimer(id, durationSec) {
+ document.getElementById('start-btn-' + id).style.display = 'none';
+ document.getElementById('q-body-' + id).style.display = 'block';
+ 
+ let totalSec = durations[id] || durationSec;
+ let duration = totalSec * 1000;
+ startTimes[id] = Date.now();
+ endTimes[id] = startTimes[id] + duration;
+ 
+ timerIntervals[id] = setInterval(() => updateTimer(id), 10);
+ }
+
+ function updateTimer(id) {
+ let now = Date.now();
+ let remain = endTimes[id] - now;
+ let timerEl = document.getElementById('timer-' + id);
+ 
+ if (remain <= 0) {
+ clearInterval(timerIntervals[id]);
+ timerEl.innerText = "TIME UP";
+ timerEl.className = 'sticky-timer-container timer-stopped';
+ return;
+ }
+ 
+ let ms = Math.floor(remain % 1000).toString().padStart(3, '0');
+ let totalSec = Math.floor(remain / 1000);
+ let m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+ let s = (totalSec % 60).toString().padStart(2, '0');
+ 
+ timerEl.innerText = `${m}:${s}.${ms}`;
+ 
+ let totalDur = durations[id] * 1000;
+ if (remain <= 60000) {
+ timerEl.className = 'sticky-timer-container timer-red-blink';
+ } else if (remain <= totalDur / 2) {
+ timerEl.className = 'sticky-timer-container timer-orange';
+ } else {
+ timerEl.className = 'sticky-timer-container';
+ }
+ }
+
+ function showAnswer(id) {
+ clearInterval(timerIntervals[id]);
+ document.getElementById('ans-block-' + id).style.display = 'block';
+ 
+ let timerEl = document.getElementById('timer-' + id);
+ timerEl.className = 'sticky-timer-container timer-stopped';
+ 
+ let now = Date.now();
+ let elapsed = now - startTimes[id];
+ let totalDur = durations[id] * 1000;
+ if(elapsed > totalDur) elapsed = totalDur;
+ 
+ let ms = Math.floor(elapsed % 1000).toString().padStart(3, '0');
+ let totalSec = Math.floor(elapsed / 1000);
+ let m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+ let s = (totalSec % 60).toString().padStart(2, '0');
+ 
+ timerEl.innerText = `CLEAR TIME: ${m}:${s}.${ms}`;
+ document.getElementById('ans-btn-' + id).style.display = 'none';
+ }
+</script>
+</body>
+</html>
