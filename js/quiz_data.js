@@ -157,23 +157,24 @@ const quizData = {
     // quiz_data.js 内の Stage 4 などの設定例
    stage4: {
     title: "ステージ4：応用ソート",
-    topics: [
-        {
-            id: "advanced_sort_01",
-            title: "01 ソートアルゴリズム トレース式",
-            introHTML: "資料html/ステージ(4) アプリケーション/Trace_sort.HTML"
-        },
-        {
-            id: "advanced_sort_02",
-            title: "02 ソートアルゴリズム",
-            introHTML: "資料html/ステージ(4) アプリケーション/anaume_sort.html"
-        },
-        {
-            id: "advanced_sort_03",
-            title: "03 ソートアルゴリズム最終確認",
-            introHTML: "資料html/ステージ(4) アプリケーション/kou_sort.html"
-        }
-    　]
-　　},
+       topics: [
+            {
+                id: "advanced_sort_01",
+                title: "01 ソートアルゴリズム トレース式",
+                introHTML: "資料html/ステージ(4) アプリケーション/Trace_sort.HTML" 
+             },
+             {
+                 id: "advanced_sort_02",
+                 title: "02 ソートアルゴリズム",
+                  introHTML: "資料html/ステージ(4) アプリケーション/anaume_sort.html"
+            },
+            {
+                id: "advanced_sort_03",
+                title: "03 ソートアルゴリズム最終確認",
+                introHTML: "資料html/ステージ(4) アプリケーション/kou_sort.html"
+            } 
+        ]
+    },
+　　
 };
 
