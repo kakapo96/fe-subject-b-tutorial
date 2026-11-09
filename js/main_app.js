@@ -85,7 +85,7 @@ function renderTopicMenu(stageData) {
     container.innerHTML = html;
 }
 
-// ＝＝＝＝ 第3層：コンテンツを描画（タブあり/なし自動判定） ＝＝＝＝
+// ＝＝＝＝ 第3層：コンテンツを描画（iframe / タブあり / タブなし 自動判定） ＝＝＝＝
 function startTopic(topicId) {
     currentTopicData = currentStageData.topics.find(t => t.id === topicId);
     if (!currentTopicData) return;
@@ -99,16 +99,31 @@ function startTopic(topicId) {
         ? `<span style="color: #28a745; font-weight: bold; margin-left: auto; font-size: 1.1rem;">✔ クリア済み</span>`
         : `<button onclick="markAsCleared('${topicId}')" style="margin-left: auto; background: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">このトピックをクリア</button>`;
 
+    // ▼▼▼ standaloneHTML が設定されている場合（Stage 4以降）：iframe で展開 ▼▼▼
+    if (currentTopicData.standaloneHTML) {
+        container.innerHTML = `
+            <div class="nav-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                <button class="back-btn" onclick="renderTopicMenu(currentStageData)" style="margin: 0;">← メニューに戻る</button>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-weight: bold; color: #333;">【応用ステージ】${currentTopicData.title}</span>
+                    ${clearBtnHTML}
+                </div>
+            </div>
+            <!-- iframeのallow属性を追加してスクリプトの動作を許可 -->
+            <iframe src="${currentTopicData.standaloneHTML}" sandbox="allow-scripts allow-same-origin" style="width: 100%; height: 85vh; border: 2px solid #ccc; border-radius: 8px;"></iframe>
+        `;
+        return; // ここで処理終了（fetchはしない）
+    }
+
+    // ▼▼▼ それ以外（introHTML がある場合）：fetchで読み込む ▼▼▼
     container.innerHTML = '<p style="text-align:center; font-weight:bold;">データを読み込み中...</p>';
 
-    // ① introHTML（解説部分）を読み込む
     fetch(currentTopicData.introHTML)
     .then(res => res.ok ? res.text() : Promise.reject(res))
     .then(introData => {
-        
-        // ② quizHTML（問題部分）が設定されているかチェック
+        // quizHTML（問題部分）が設定されているかチェック
         if (currentTopicData.quizHTML) {
-            // ▼▼▼ quizHTMLがある場合（Stage 1〜3など）：タブ形式で表示 ▼▼▼
+            // quizHTMLがある場合（Stage 1〜3）：タブ形式で表示
             fetch(currentTopicData.quizHTML)
             .then(res => res.ok ? res.text() : Promise.resolve(""))
             .then(quizDataHtml => {
@@ -133,7 +148,7 @@ function startTopic(topicId) {
                 `;
             });
         } else {
-            // ▼▼▼ quizHTMLがない場合（Stage 4以降など）：タブなしで地続き表示 ▼▼▼
+            // quizHTMLがない場合：タブなしで地続き表示
             container.innerHTML = `
                 <div class="nav-header" style="display: flex; align-items: center;">
                     <button class="back-btn" onclick="renderTopicMenu(currentStageData)">← メニューに戻る</button>
@@ -206,11 +221,4 @@ function resetProgress() {
         }
         alert("進捗をリセットしました。");
     }
-}
-
-// ＝＝＝＝ 互換性維持：チュートリアル完了ボタン用 ＝＝＝＝
-function completeTutorial() {
-    markAsCleared('tut_07');
-    alert('🎉 チュートリアルクリア！進捗が保存されました！');
-    backToRoadmap();
 }
